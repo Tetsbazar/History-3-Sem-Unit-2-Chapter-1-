@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Unit 2 | Ch 1 | All Sets 1-14</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Syne',sans-serif;background:#f0faf4;min-height:100vh;color:#1c2e24}
+.top-bar{background:#1a7a4a;padding:0.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.top-logo{font-size:1.1rem;font-weight:800;color:white}.top-logo span{color:#f9a825}
+.timer-box{background:rgba(255,255,255,0.15);border-radius:8px;padding:0.4rem 1rem;display:flex;align-items:center;gap:6px;font-size:1rem;font-weight:700;color:white}
+.timer-box.danger{background:#dc3545}
+.main{max-width:820px;margin:0 auto;padding:1.5rem 1rem}
+.hub-header{text-align:center;margin-bottom:2rem}
+.hub-header h1{font-family:'Tiro Bangla',serif;font-size:1.8rem;color:#1c2e24}
+.hub-header p{font-family:'Tiro Bangla',serif;font-size:0.95rem;color:#5a7a66;margin-top:0.3rem}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem}
+.set-card{background:white;border-radius:14px;padding:1.5rem;border:1.5px solid #c5dccb;transition:all 0.2s;cursor:pointer;color:#1c2e24;box-shadow:0 2px 8px rgba(26,122,74,0.06)}
+.set-card:hover{transform:translateY(-3px);border-color:#1a7a4a;box-shadow:0 6px 20px rgba(26,122,74,0.12)}
+.set-card .icon{font-size:2.2rem;margin-bottom:0.3rem}
+.set-card .set-num{font-weight:700;font-size:1.1rem;color:#1a7a4a}
+.set-card .set-title{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin:0.2rem 0 0.5rem}
+.set-card .set-meta{display:flex;gap:1rem;font-size:0.7rem;color:#5a7a66}
+.set-card .set-meta span{background:#f0faf4;padding:0.15rem 0.6rem;border-radius:4px}
+.quiz-info{background:white;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #c5dccb;display:flex;gap:1rem;flex-wrap:wrap}
+.info-item{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.info-item strong{color:#1a7a4a}
+.progress-wrap{background:#c5dccb;border-radius:4px;height:6px;margin-bottom:1.2rem;overflow:hidden}
+.progress-fill{height:100%;background:#1a7a4a;border-radius:4px;transition:width 0.3s}
+.q-card{background:white;border-radius:14px;padding:1.4rem;margin-bottom:1rem;border:1px solid #c5dccb;box-shadow:0 2px 10px rgba(26,122,74,0.06)}
+.q-num{font-size:0.75rem;font-weight:700;color:#e8730a;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.6rem}
+.q-text{font-family:'Tiro Bangla',serif;font-size:1rem;color:#1c2e24;line-height:1.7;margin-bottom:1.1rem}
+.opts{display:flex;flex-direction:column;gap:0.6rem}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:10px;cursor:pointer;transition:all 0.15s;background:white;text-align:left;width:100%;font-family:inherit}
+.opt:hover:not(.disabled){border-color:#1a7a4a;background:#f0faf4}
+.opt-circle{min-width:28px;height:28px;border-radius:50%;border:1.5px solid #c5dccb;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#5a7a66;flex-shrink:0;transition:all 0.15s}
+.opt-text{font-family:'Tiro Bangla',serif;font-size:0.92rem;color:#1c2e24;line-height:1.6;padding-top:2px}
+.opt.correct{border-color:#1a7a4a;background:#e8f7ef}
+.opt.correct .opt-circle{background:#1a7a4a;border-color:#1a7a4a;color:white}
+.opt.wrong{border-color:#dc3545;background:#fdf0f0}
+.opt.wrong .opt-circle{background:#dc3545;border-color:#dc3545;color:white}
+.opt.disabled{cursor:default}
+.explanation{background:#f0faf4;border-left:3px solid #1a7a4a;border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-top:0.8rem;display:none}
+.explanation.show{display:block}
+.explanation p{font-family:'Tiro Bangla',serif;font-size:0.88rem;color:#2c4035;line-height:1.7}
+.explanation strong{color:#1a7a4a}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:0.8rem}
+.score-show{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.next-btn{background:#1a7a4a;color:white;border:none;padding:0.6rem 1.4rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:0.9rem;cursor:pointer;transition:all 0.15s}
+.next-btn:hover{background:#2aad68}
+.next-btn:disabled{background:#c5dccb;cursor:default}
+.result-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb;display:none}
+.result-wrap.show{display:block}
+.result-icon{font-size:3rem;margin-bottom:0.5rem}
+.result-score{font-size:3.5rem;font-weight:800;color:#1a7a4a}
+.result-total{font-size:1rem;color:#5a7a66;margin-bottom:0.5rem;font-family:'Tiro Bangla',serif}
+.result-grade{font-size:1.2rem;font-weight:600;color:#1c2e24;margin-bottom:1.5rem;font-family:'Tiro Bangla',serif}
+.result-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.result-bar{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.rb-num{font-size:1.4rem;font-weight:800}
+.rb-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66;margin-top:0.2rem}
+.retry-btn{background:#1a7a4a;color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-right:0.5rem}
+.review-btn{background:white;color:#1a7a4a;border:1.5px solid #1a7a4a;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer}
+.back-btn{background:white;color:#5a7a66;border:1.5px solid #c5dccb;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-top:0.6rem}
+.start-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb}
+.start-wrap h2{font-family:'Tiro Bangla',serif;font-size:1.4rem;color:#1c2e24;margin-bottom:0.5rem}
+.start-wrap p{font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#5a7a66;line-height:1.7;margin-bottom:1.2rem}
+.start-info{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.si{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.si-num{font-size:1.4rem;font-weight:800;color:#1a7a4a}
+.si-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66}
+.start-btn{background:#1a7a4a;color:white;border:none;padding:0.85rem 2.5rem;border-radius:10px;font-family:'Tiro Bangla',serif;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 15px rgba(26,122,74,0.3)}
+.start-btn:hover{background:#2aad68}
+.start-btn:disabled{background:#c5dccb;cursor:not-allowed;box-shadow:none}
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999;display:none}
+.login-overlay.active{display:flex}
+.login-modal{background:white;border-radius:16px;padding:2.5rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-modal h2{font-family:'Tiro Bangla',serif;font-size:1.3rem;color:#1c2e24;text-align:center;margin-bottom:0.3rem}
+.login-modal p{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;text-align:center;margin-bottom:1.5rem}
+.login-modal label{font-size:0.8rem;font-weight:600;color:#1c2e24;display:block;margin-bottom:0.3rem}
+.login-modal input{width:100%;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif}
+.login-modal input:focus{outline:none;border-color:#1a7a4a}
+.login-modal .login-btn{width:100%;background:#1a7a4a;color:white;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tiro Bangla',serif}
+.login-modal .login-btn:hover{background:#2aad68}
+.login-modal .login-btn:disabled{background:#c5dccb;cursor:not-allowed}
+.login-modal .error-msg{color:#dc3545;font-size:0.8rem;text-align:center;margin-top:0.5rem;font-family:'Tiro Bangla',serif;display:none}
+.login-modal .limit-info{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#856404;display:none}
+.login-modal .set-name-display{background:#f0faf4;border-radius:8px;padding:0.5rem;text-align:center;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#1a7a4a;font-weight:600}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-logo">Test <span>Bazar</span></div>
+  <div class="timer-box" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+  <!-- ===== LOGIN OVERLAY ===== -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-modal">
+      <h2>🔐 লগইন করুন</h2>
+      <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+      <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+      <div class="limit-info" id="limitInfo">⚠️ <span id="limitMsg"></span></div>
+      <label>ইউজারনেম</label>
+      <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLoginFromSet()">
+      <button class="login-btn" id="loginBtn" onclick="doLoginFromSet()">✅ লগইন করে Test শুরু করো</button>
+      <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।</div>
+    </div>
+  </div>
+
+  <!-- ===== HUB PAGE ===== -->
+  <div id="hubPage">
+    <div class="hub-header">
+      <h1>📚 Unit 2 — প্রথম অধ্যায়: উনবিংশ ও বিংশ শতকে উপনিবেশবাদ ও সাম্রাজ্যবাদ</h1>
+      <p>নিচের সেটগুলো থেকে বেছে নিন। Test শুরু করতে সেটে ক্লিক করুন এবং লগইন করুন।</p>
+      <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-top:0.5rem;"></div>
+    </div>
+    <div class="set-grid" id="setGrid"></div>
+  </div>
+
+  <!-- ===== TEST AREA ===== -->
+  <div id="testArea" class="hidden">
+    <div class="quiz-info">
+      <div class="info-item">🎓 <strong id="testSetName">শিক্ষাবিজ্ঞান</strong> — Unit 2 | Ch 1 | <span id="testSetLabel">Set 1</span></div>
+      <div class="info-item">📝 <span id="testTopic">সাম্রাজ্যবাদ ও উপনিবেশবাদের ধারণা</span></div>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="q-card" id="qCard">
+      <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+      <div class="nav-row">
+        <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT AREA ===== -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-icon" id="resultIcon"></div>
+    <div class="result-score" id="finalScore"></div>
+    <div class="result-total">/ ১৫</div>
+    <div class="result-grade" id="resultGrade"></div>
+    <div class="result-bars">
+      <div class="result-bar"><div class="rb-num" id="rbCorrect" style="color:#1a7a4a"></div><div class="rb-label">সঠিক</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbWrong" style="color:#dc3545"></div><div class="rb-label">ভুল</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbPct" style="color:#e8730a"></div><div class="rb-label">স্কোর</div></div>
+    </div>
+    <div id="attemptInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-bottom:1rem;"></div>
+    <button class="retry-btn" onclick="startQuiz(currentSetId)">আবার চেষ্টা করো</button>
+    <button class="review-btn" onclick="showReview()">উত্তর দেখো</button>
+    <br>
+    <button class="back-btn" onclick="goToHub()">← Hub এ ফিরে যাও</button>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  ইউজার ডেটাবেস
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TOTAL_SETS = 14;
+
+const userData = [
+  {username:"alfa_romeo", password:"ARx7P29m", attempts:{}},
+  {username:"santos", password:"St8Qv41L", attempts:{}},
+  {username:"falcon", password:"Fc3MZ92k", attempts:{}},
+  {username:"titan", password:"Ti6Rp84W", attempts:{}},
+  {username:"matrix", password:"Mx5Kd73N", attempts:{}},
+  {username:"phoenix", password:"Ph9Js28V", attempts:{}},
+  {username:"cobra", password:"Cb4Ln65X", attempts:{}},
+  {username:"shadow", password:"Sh7Wp19Q", attempts:{}},
+  {username:"rocket", password:"Rc2Ty86M", attempts:{}},
+  {username:"warrior", password:"Wr8Az34K", attempts:{}},
+  {username:"eagle", password:"Eg5Xq72P", attempts:{}},
+  {username:"thunder", password:"Th1Vk93R", attempts:{}},
+  {username:"dragon", password:"Dr6Hm48N", attempts:{}},
+  {username:"panther", password:"Pa9Nc25J", attempts:{}},
+  {username:"viking", password:"Vi4Qs87L", attempts:{}},
+  {username:"hunter", password:"Hu7Bp31X", attempts:{}},
+  {username:"legend", password:"Le2Mz64T", attempts:{}},
+  {username:"ranger", password:"Ra8Kd95W", attempts:{}},
+  {username:"knight", password:"Kn3Xp57Q", attempts:{}},
+  {username:"turbo", password:"Tu6Lv21N", attempts:{}},
+  {username:"alpha", password:"Ap9Rm83K", attempts:{}},
+  {username:"bravo", password:"Br5Yt42M", attempts:{}},
+  {username:"charlie", password:"Ch7Wq16P", attempts:{}},
+  {username:"delta", password:"De4Nk78X", attempts:{}},
+  {username:"echo", password:"Ec8Jp35V", attempts:{}},
+  {username:"foxtrot", password:"Fx2Lm94Q", attempts:{}},
+  {username:"gamma", password:"Ga6Xs27T", attempts:{}},
+  {username:"helix", password:"He1Vp85N", attempts:{}},
+  {username:"inferno", password:"In9Qk43L", attempts:{}},
+  {username:"jaguar", password:"Ja5Mz72W", attempts:{}},
+  {username:"karma", password:"Ka8Rp14X", attempts:{}},
+  {username:"laser", password:"La3Tn67Q", attempts:{}},
+  {username:"meteor", password:"Me7Wx29P", attempts:{}},
+  {username:"nova", password:"No4Kz86M", attempts:{}},
+  {username:"omega", password:"Om2Lp53V", attempts:{}},
+  {username:"pegasus", password:"Pe9Xq71N", attempts:{}},
+  {username:"quantum", password:"Qu5Vr38K", attempts:{}},
+  {username:"rebel", password:"Re8Mz24T", attempts:{}},
+  {username:"storm", password:"St1Kp97W", attempts:{}},
+  {username:"tornado", password:"To6Nx45Q", attempts:{}},
+  {username:"ultra", password:"Ul3Wp82M", attempts:{}},
+  {username:"vector", password:"Ve7Lq19X", attempts:{}},
+  {username:"wolf", password:"Wo4Rm63P", attempts:{}},
+  {username:"xenon", password:"Xe9Tk25N", attempts:{}},
+  {username:"yodha", password:"Yo2Vz78K", attempts:{}},
+  {username:"zeus", password:"Ze8Mp41Q", attempts:{}},
+  {username:"atlas", password:"At5Lx93W", attempts:{}},
+  {username:"blaze", password:"Bl1Qn67M", attempts:{}},
+  {username:"cyclone", password:"Cy7Rp34T", attempts:{}},
+  {username:"dynamo", password:"Dy4Wk82X", attempts:{}},
+  {username:"apollo", password:"Ap7Kx94Lm", attempts:{}},
+  {username:"archer", password:"Ar3Vp62Qn", attempts:{}},
+  {username:"asteroid", password:"As8Tm15Rw", attempts:{}},
+  {username:"bandit", password:"Ba5Qz71Kp", attempts:{}},
+  {username:"bison", password:"Bi9Ln34Xt", attempts:{}},
+  {username:"bullet", password:"Bu2Wr86Mv", attempts:{}},
+  {username:"canyon", password:"Ca6Xp29Qk", attempts:{}},
+  {username:"captain", password:"Cp1Mz75Ln", attempts:{}},
+  {username:"comet", password:"Co8Tk43Wp", attempts:{}},
+  {username:"cyclonex", password:"Cy4Vr92Km", attempts:{}},
+  {username:"diesel", password:"Di7Lp18Qx", attempts:{}},
+  {username:"domino", password:"Do3Wn67Rt", attempts:{}},
+  {username:"duke", password:"Du9Kx25Mv", attempts:{}},
+  {username:"empire", password:"Em5Qp84Ln", attempts:{}},
+  {username:"explorer", password:"Ex2Vz39Kt", attempts:{}},
+  {username:"fighter", password:"Fi8Lm71Qw", attempts:{}},
+  {username:"galaxy", password:"Ga4Tk26Xp", attempts:{}},
+  {username:"gladiator", password:"Gl7Wp95Mn", attempts:{}},
+  {username:"gravity", password:"Gr1Nx53Lq", attempts:{}},
+  {username:"hawk", password:"Ha9Kz42Rt", attempts:{}},
+  {username:"horizon", password:"Ho5Vm87Xp", attempts:{}},
+  {username:"icefire", password:"Ic3Lp16Qn", attempts:{}},
+  {username:"impact", password:"Im8Wr74Kt", attempts:{}},
+  {username:"ironman", password:"Ir2Xq95Mv", attempts:{}},
+  {username:"jetstar", password:"Je6Nk38Lp", attempts:{}},
+  {username:"kingston", password:"Ki1Vp72Qw", attempts:{}},
+  {username:"lightning", password:"Li9Tm45Rx", attempts:{}},
+  {username:"majestic", password:"Ma4Kp83Ln", attempts:{}},
+  {username:"monster", password:"Mo7Wz21Qt", attempts:{}},
+  {username:"neptune", password:"Ne3Lx96Mv", attempts:{}},
+  {username:"ninja", password:"Ni8Qr54Kp", attempts:{}},
+  {username:"orbit", password:"Or2Vp73Ln", attempts:{}},
+  {username:"patriot", password:"Pa6Tk18Qw", attempts:{}},
+  {username:"pioneer", password:"Pi1Xm85Rt", attempts:{}},
+  {username:"predator", password:"Pr9Lq47Kv", attempts:{}},
+  {username:"proton", password:"Pt4Wn62Mx", attempts:{}},
+  {username:"rapid", password:"Ra7Kx93Lp", attempts:{}},
+  {username:"samurai", password:"Sa3Vp25Qn", attempts:{}},
+  {username:"sniper", password:"Sn8Tm71Rw", attempts:{}},
+  {username:"solaris", password:"So2Qk84Mv", attempts:{}},
+  {username:"spartan", password:"Sp6Ln39Xt", attempts:{}},
+  {username:"striker", password:"St1Wr57Kp", attempts:{}},
+  {username:"summit", password:"Su9Xp26Lm", attempts:{}},
+  {username:"taurus", password:"Ta5Vz91Qw", attempts:{}},
+  {username:"tempest", password:"Te3Kp48Rt", attempts:{}},
+  {username:"trident", password:"Tr8Wm72Ln", attempts:{}},
+  {username:"valiant", password:"Va2Nx35Qk", attempts:{}},
+  {username:"voyager", password:"Vo6Lp97Mx", attempts:{}},
+  {username:"wildfire", password:"Wi1Tk64Rv", attempts:{}},
+  {username:"zenith", password:"Ze9Qx28Lp", attempts:{}}
+];
+
+// ============================================================
+//  সব সেটের ডেটা (Set 1-14 for Unit 2 Chapter 1)
+// ============================================================
+const allSets = {
+  1: {
+    name: 'Set 1',
+    icon: '🌍',
+    topic: 'সাম্রাজ্যবাদ ও উপনিবেশবাদের ধারণা',
+    questions: [
+      {q: 'ইম্পেরিয়ালিজম (Imperialism) বা সাম্রাজ্যবাদ শব্দটি কোন্ ভাষার শব্দ থেকে এসেছে?', opts: ['ফরাসি শব্দ ইম্পেরিয়াল থেকে', 'গ্রিক শব্দ এম্পায়ার থেকে', 'লাতিন শব্দ ইম্পেরিয়াম থেকে', 'জার্মান শব্দ ইম্পেরিয়া থেকে'], ans: 2, exp: 'লাতিন ইম্পেরিয়াম (Imperium) শব্দটি থেকে ইম্পেরিয়ালিজম কথাটি এসেছে। প্রথমদিকে এর দ্বারা সামরিক কর্তৃত্বকে বোঝানো হলেও পরে এর অর্থ দাঁড়ায় বৃহৎ রাষ্ট্র দ্বারা ক্ষুদ্র রাষ্ট্রের ওপর শাসন প্রতিষ্ঠা।'},
+      {q: '"সাম্রাজ্যবাদ হল পুঁজিবাদের সর্বোচ্চ স্তর"— বিখ্যাত এই উক্তিটি কার?', opts: ['জে এ হবসন', 'কার্ল মার্কস', 'ভি আই লেনিন', 'চার্লস বেয়ার্ড'], ans: 2, exp: 'রুশ কমিউনিস্ট নেতা ভি আই লেনিন সাম্রাজ্যবাদকে সংজ্ঞায়িত করতে গিয়ে বলেছিলেন যে, সাম্রাজ্যবাদ হল পুঁজিবাদের সর্বোচ্চ স্তর।'},
+      {q: '"একটি সচেতন জাতীয় রাষ্ট্রের আধিপত্য বিস্তারের যাবতীয় প্রচেষ্টাকে এককথায় বলা হয় সাম্রাজ্যবাদ"— এ কথা কে বলেছেন?', opts: ['এইচ জি ওয়েল্ল্স', 'হ্যান্স মরগ্যানথাউ', 'সুম্যান', 'চার্লস হজেজ'], ans: 0, exp: 'প্রখ্যাত পণ্ডিত এইচ জি ওয়েল্ল্স সাম্রাজ্যবাদের এই সুস্পষ্ট সংজ্ঞাটি প্রদান করেছিলেন।'},
+      {q: 'যখন কোনো শক্তিশালী দেশ অন্য একটি দেশের ব্যাবসা-বাণিজ্য ও আইনকানুনের ওপর প্রভাব বিস্তার করে, তখন তাকে কোন্ ধরনের সাম্রাজ্যবাদ বলা হয়?', opts: ['ভৌমিক সাম্রাজ্যবাদ', 'অর্থনৈতিক সাম্রাজ্যবাদ', 'সামাজিক-সাংস্কৃতিক সাম্রাজ্যবাদ', 'নয়া সাম্রাজ্যবাদ'], ans: 1, exp: 'সরাসরি ভূখণ্ড দখল না করে শুধু অর্থনীতির ওপর প্রভাব বিস্তার করাকে অর্থনৈতিক সাম্রাজ্যবাদ বলে।'},
+      {q: 'ইংরেজি Colony (উপনিবেশ) শব্দটি কোন্ লাতিন শব্দ থেকে এসেছে?', opts: ['Colonization', 'Colonia', 'Columbus', 'Culture'], ans: 1, exp: 'ইংরেজি Colony শব্দটি লাতিন Colonia থেকে এসেছে যার অর্থ হলো ভূসম্পত্তি।'},
+      {q: '"উপনিবেশবাদ হল জাতীয় জনসমাজের প্রাকৃতিক ধারা"— উপনিবেশবাদের এই সংজ্ঞা কে দিয়েছেন?', opts: ['এমারসন', 'এম কোহন', 'জুরগ্যান ওস্টারহ্যামেল', 'জে এ হবসন'], ans: 3, exp: 'প্রখ্যাত ইতিহাসবিদ জে এ হবসন তাঁর Imperialism: A Study গ্রন্থে এই সংজ্ঞা প্রদান করেছেন।'},
+      {q: 'মাইকেল হেক্টর তাঁর Internal Colonialism গ্রন্থে কোন্ দেশের সীমান্তবর্তী এলাকাকে (Peripheral Regions) ওই দেশেরই উপনিবেশ বলে উল্লেখ করেছেন?', opts: ['স্পেনের', 'আমেরিকার', 'ইংল্যান্ডের', 'রাশিয়ার'], ans: 2, exp: 'যখন একই দেশের কোনো শক্তিশালী জনগোষ্ঠী ওই দেশেরই অন্য কোনো অঞ্চলের দুর্বল জনগোষ্ঠীকে শোষণ করে, তাকে অভ্যন্তরীণ উপনিবেশবাদ বলে, যেমন ইংল্যান্ডের সীমান্তবর্তী এলাকা।'},
+      {q: 'বর্তমান অস্ট্রেলিয়া, কানাডা এবং আমেরিকা যুক্তরাষ্ট্র কোন্ ধরনের উপনিবেশবাদের প্রকৃষ্ট উদাহরণ?', opts: ['শোষণমূলক উপনিবেশবাদ', 'স্থায়ী বসতিস্থাপন মূলক উপনিবেশবাদ (Settler Colonialism)', 'অভ্যন্তরীণ উপনিবেশবাদ', 'নয়া উপনিবেশবাদ'], ans: 1, exp: 'এই দেশগুলিতে ইউরোপীয়রা গিয়ে স্থায়ীভাবে বসতি স্থাপন করে কালক্রমে সেখানকার স্থায়ী বাসিন্দায় পরিণত হয়েছে।'},
+      {q: '১৮৯০-এর দশকে রবার ও হাতির দাঁতের লোভে কে কঙ্গো দখল করেছিলেন?', opts: ['ফ্রান্সের রাজা তৃতীয় নেপোলিয়ন', 'বেলজিয়ামের রাজা দ্বিতীয় লিওপোল্ড', 'ইংল্যান্ডের রানি ভিক্টোরিয়া', 'জার্মানির কাইজার দ্বিতীয় উইলিয়াম'], ans: 1, exp: 'এটি শোষণমূলক উপনিবেশবাদ-এর একটি বড় উদাহরণ, যেখানে বেলজিয়ামের রাজা কেবল সম্পদ লুটের জন্যই কঙ্গো দখল করেছিলেন।'},
+      {q: 'দ্বিতীয় বিশ্বযুদ্ধের পর উপনিবেশগুলি স্বাধীন হলেও তাদের ওপর পরোক্ষভাবে অর্থনৈতিক ও রাজনৈতিক কর্তৃত্ব বজায় রাখার কৌশলকে কী বলা হয়?', opts: ['নয়া সাম্রাজ্যবাদ', 'উত্তর উপনিবেশবাদ', 'নয়া উপনিবেশবাদ (Neo-Colonialism)', 'প্রতিনিধিত্বমূলক উপনিবেশবাদ'], ans: 2, exp: 'ঔপনিবেশিক শক্তিগুলি সদ্য স্বাধীন দেশগুলির ওপর GATT চুক্তি, WTO ইত্যাদির মাধ্যমে যে পরোক্ষ কর্তৃত্ব বজায় রাখে, তাকেই নয়া উপনিবেশবাদ বলে।'},
+      {q: 'উপনিবেশবাদ ও সাম্রাজ্যবাদের মধ্যে পার্থক্যের ক্ষেত্রে কোনটি সঠিক?', opts: ['সাম্রাজ্যবাদের ধারণা উপনিবেশবাদের চেয়ে নতুন', 'উপনিবেশবাদের ধারণা সাম্রাজ্যবাদের তুলনায় নতুন', 'দুটি ধারণারই জন্ম একই সময়ে', 'উপনিবেশবাদ কেবল এশিয়ায় সীমাবদ্ধ ছিল'], ans: 1, exp: 'প্রাচীন রোমান সাম্রাজ্যের যুগ থেকেই সাম্রাজ্যবাদের ধারণা প্রচলিত ছিল, কিন্তু উপনিবেশবাদের সূচনা হয় অনেক পরে, পঞ্চদশ শতকে।'},
+      {q: '"কৌশল ও হিংসার সাহায্যে কোনো দেশের ওপর বৈদেশিক শাসন চাপিয়ে দেওয়াকে সাম্রাজ্যবাদ বলে"— উক্তিটি কার?', opts: ['সুম্যান', 'এইচ জি ওয়েল্ল্স', 'চার্লস বেয়ার্ড', 'লেনিন'], ans: 0, exp: 'ঐতিহাসিক সুম্যান সাম্রাজ্যবাদকে কৌশল ও হিংসার সাহায্যে চাপিয়ে দেওয়া শাসন হিসেবে সংজ্ঞায়িত করেছেন।'},
+      {q: 'কোন্ ধরনের উপনিবেশবাদে বিশেষ কোনো কূটনৈতিক কারণে কোনো শক্তিশালী দেশ অন্য কোনো দেশে বিদেশি জনগোষ্ঠীকে স্থায়ীভাবে বসবাস করতে উৎসাহিত করে?', opts: ['শোষণমূলক উপনিবেশবাদ', 'অভ্যন্তরীণ উপনিবেশবাদ', 'প্রতিনিধিত্বমূলক উপনিবেশবাদ (Surrogate Colonialism)', 'উত্তর উপনিবেশবাদ'], ans: 2, exp: 'কূটনৈতিক স্বার্থসিদ্ধির জন্য অন্য দেশে বিদেশি জনগোষ্ঠীকে বসবাস করতে উৎসাহ দেওয়াই হলো প্রতিনিধিত্বমূলক উপনিবেশবাদ।'},
+      {q: '১৮৭০ থেকে ১৯১৪ খ্রিস্টাব্দের কালপর্বের সাম্রাজ্যবাদ কী নামে পরিচিত?', opts: ['নয়া সাম্রাজ্যবাদ (New Imperialism)', 'প্রাচীন সাম্রাজ্যবাদ', 'ধ্রুপদি সাম্রাজ্যবাদ', 'মুক্ত সাম্রাজ্যবাদ'], ans: 0, exp: '১৮৭০ খ্রিস্টাব্দে সেডানের যুদ্ধের পর থেকে সাম্রাজ্যবাদ বিস্তারের নতুন এক তীব্র প্রয়াস শুরু হয়, যা নয়া সাম্রাজ্যবাদ নামে পরিচিত।'},
+      {q: 'প্রত্যক্ষ উপনিবেশ না গড়ে, পরোক্ষভাবে পুতুল সরকার বসিয়ে অধীনস্থ ভূখণ্ডের ওপর নিয়ন্ত্রণ স্থাপন করাকে সাধারণত কী বলা হয়?', opts: ['সাম্রাজ্যবাদ', 'উপনিবেশবাদ', 'মার্কেন্টাইলবাদ', 'সামন্তবাদ'], ans: 0, exp: 'উপনিবেশগুলিতে প্রত্যক্ষ শাসন থাকে, কিন্তু সাম্রাজ্যবাদের ক্ষেত্রে অনেক সময় পরোক্ষভাবে বা পুতুল সরকার বসিয়েও নিয়ন্ত্রণ কায়েম রাখা যায়।'}
+    ]
+  },
+  2: {
+    name: 'Set 2',
+    icon: '🌍',
+    topic: 'প্রথম পর্বের উপনিবেশ ও আফ্রিকা মহাদেশ',
+    questions: [
+      {q: '১৪৯৩ খ্রিস্টাব্দে কোন্ পোপের বুল বা নির্দেশনামার দ্বারা স্পেনের সামুদ্রিক অভিযানের এলাকা নির্দিষ্ট করে দেওয়া হয়েছিল?', opts: ['পোপ তৃতীয় ইনোসেন্ট', 'পোপ ষষ্ঠ আলেকজান্ডার', 'পোপ দ্বিতীয় আর্বান', 'পোপ নবম পায়াস'], ans: 1, exp: 'সামুদ্রিক অভিযানের এলাকা নিয়ে পোর্তুগাল ও স্পেনের বিবাদের কারণে পোপ ষষ্ঠ আলেকজান্ডার একটি নির্দেশনামা জারি করে স্পেনের এলাকা নির্দিষ্ট করে দেন।'},
+      {q: '১৪৯৪ খ্রিস্টাব্দে পোর্তুগাল ও স্পেনের মধ্যে সামুদ্রিক অভিযানের এলাকা নির্ধারণের জন্য কোন্ চুক্তি স্বাক্ষরিত হয়?', opts: ['প্যারিসের চুক্তি', 'টরডিসিল্লাস-এর চুক্তি', 'অ্যামিয়েন্সের চুক্তি', 'বার্লিন চুক্তি'], ans: 1, exp: 'পোপের নির্দেশনামায় পোর্তুগাল আপত্তি জানালে ১৪৯৪ খ্রিস্টাব্দে টরডিসিল্লাস-এর চুক্তি স্বাক্ষরিত হয়।'},
+      {q: '১৮৮২ খ্রিস্টাব্দে কোন্ দেশ এককভাবে মিশর দখল করে পুতুল সরকার গঠনের মাধ্যমে সুয়েজ খালের ওপর নিয়ন্ত্রণ প্রতিষ্ঠা করে?', opts: ['ফ্রান্স', 'জার্মানি', 'ইংল্যান্ড', 'ইটালি'], ans: 2, exp: 'মিশরে পাশা মহম্মদ আলির দুর্বল উত্তরাধিকারীদের সুযোগ নিয়ে ১৮৮২ খ্রিস্টাব্দে ইংল্যান্ড মিশর দখল করে এবং খেদিভের নেতৃত্বে পুতুল সরকার গঠন করে।'},
+      {q: 'সুদানে কোন্ নেতা নিজেকে মাহদি বা ত্রাণকর্তারূপে ঘোষণা করে শ্বেতাঙ্গ বিরোধী আন্দোলন গড়ে তোলেন?', opts: ['লর্ড কিচেনার', 'মহম্মদ আমেদ', 'পাশা মহম্মদ আলি', 'দ্বিতীয় লিওপোল্ড'], ans: 1, exp: 'উনবিংশ শতকের শেষদিকে মহম্মদ আমেদ নিজেকে মাহদি ঘোষণা করে শ্বেতাঙ্গদের বিরুদ্ধে সংগ্রাম করেন এবং রাজধানী খার্তুম দখল করে নেন।'},
+      {q: '১৮৭৬ খ্রিস্টাব্দে কার উদ্যোগে আন্তর্জাতিক আফ্রিকা সংঘ গঠিত হয়?', opts: ['জার্মানির কাইজার', 'ইংল্যান্ডের লর্ড মিলনার', 'বেলজিয়াম-রাজ দ্বিতীয় লিওপোল্ড', 'ফরাসি সম্রাট'], ans: 2, exp: 'বেলজিয়াম-রাজ দ্বিতীয় লিওপোল্ডের উদ্যোগে এই সংঘ গঠিত হয় এবং অভিযাত্রী স্ট্যানলির সাহায্যে নাইজার নদীর উপত্যকায় বেলজিয়ামের আধিপত্য প্রতিষ্ঠিত হয়।'},
+      {q: '১৮৮৪-৮৫ খ্রিস্টাব্দে গঠিত Congo Free State-এ প্রকৃতপক্ষে কোন্ দেশের কর্তৃত্ব প্রতিষ্ঠিত হয়?', opts: ['ফ্রান্সের', 'ইংল্যান্ডের', 'স্পেনের', 'বেলজিয়ামের'], ans: 3, exp: 'বার্লিন সম্মেলনের মাধ্যমে কঙ্গোর বৃহত্তর অংশে বেলজিয়ামের আধিপত্য স্বীকৃত হয় এবং এটি Congo Free State নামে বেলজিয়ামের কর্তৃত্বে আসে।'},
+      {q: 'বিসমার্কের Realpolitik-এর পরিবর্তে কাইজার দ্বিতীয় উইলিয়ামের কোন্ নীতি গ্রহণ জার্মানিকে উপনিবেশবাদ বিস্তারে উদ্বুদ্ধ করে?', opts: ['Weltpolitik', 'Open Door Policy', 'White Man\'s Burden', 'Monroe Doctrine'], ans: 0, exp: 'কাইজার দ্বিতীয় উইলিয়াম Weltpolitik নীতি গ্রহণ করে উপনিবেশ দখলের দৌড়ে নামেন, যা জার্মানিকে ইংল্যান্ড ও ফ্রান্সের সাথে সংঘাতে ঠেলে দেয়।'},
+      {q: '১৮৯৮ খ্রিস্টাব্দে রাশিয়া উত্তর চিনের কোন্ বন্দরটি দখল করে সারাবছর প্রশান্ত মহাসাগরে যাওয়ার বরফমুক্ত পথ খুঁজে পায়?', opts: ['হংকং', 'ক্যান্টন', 'পোর্ট আর্থার', 'ম্যাকাও'], ans: 2, exp: 'রাশিয়া মাঞ্চুরিয়া অঞ্চলে প্রভাব বিস্তার করে পোর্ট আর্থার বন্দরটি দখল করে, কারণ এটি বরফমুক্ত থাকায় নৌ-চলাচলে খুব সুবিধা হতো।'},
+      {q: '১৮৯৬ খ্রিস্টাব্দে ইটালি কোন্ দেশ দখলে ব্যর্থ হয়ে তার জাতীয় মর্যাদা হারায়?', opts: ['সোমালিল্যান্ড', 'ইথিওপিয়া', 'লিবিয়া', 'মরক্কো'], ans: 1, exp: '১৮৯৬ খ্রিস্টাব্দে ইটালি ইথিওপিয়া দখলে ব্যর্থ হয়। পরে ১৯৩৫ খ্রিস্টাব্দে মুসোলিনি ইথিওপিয়া জয় করে এই পূর্ব পরাজয়ের প্রতিশোধ নেন।'},
+      {q: 'বুয়র যুদ্ধ (Boer War) মূলত কাদের মধ্যে সংঘটিত হয়েছিল?', opts: ['ফরাসি এবং ওলন্দাজদের মধ্যে', 'ইংরেজ এবং অরেঞ্জ কলোনি ও ট্রান্সভালের বুয়রদের মধ্যে', 'পোর্তুগিজ এবং স্পেনীয়দের মধ্যে', 'জার্মান এবং বেলজিয়ানদের মধ্যে'], ans: 1, exp: '১৮৭৭ খ্রিস্টাব্দে অরেঞ্জ কলোনি ও ট্রান্সভালের বুয়র রাজ্য দুটি ইংরেজরা দখল করার ফলে এই যুদ্ধ শুরু হয়।'},
+      {q: 'ফরাসি-ইন্দোচিন (French Indochina) কত খ্রিস্টাব্দে গঠিত হয়?', opts: ['১৮৫৮ খ্রিস্টাব্দে', '১৮৮১ খ্রিস্টাব্দে', '১৮৮৭ খ্রিস্টাব্দে', '১৮৯৩ খ্রিস্টাব্দে'], ans: 2, exp: 'দূরপ্রাচ্যে আনাম, কোচিন চিন, টংকিং ও কম্বোডিয়া— এই চারটি রাজ্যের সমন্বয়ে ১৮৮৭ খ্রিস্টাব্দে গঠিত হয় ফরাসি-ইন্দোচিন।'},
+      {q: '"উপনিবেশগুলি থেকে যা লাভ হয়, তার তুলনায় উপনিবেশগুলির ব্যয় বেশি হয়" —উপনিবেশ সম্পর্কে এই মন্তব্য কে করেছিলেন?', opts: ['জে এ হবসন', 'অ্যাডাম স্মিথ', 'লেনিন', 'গ্ল্যাডস্টোন'], ans: 1, exp: 'প্রখ্যাত অর্থনীতিবিদ অ্যাডাম স্মিথ এই মন্তব্য করেছিলেন। যার ফলে ১৮২৫-এর পর কিছুকাল ইউরোপীয়রা উপনিবেশ দখলের ব্যাপারে উদাসীন ছিল।'},
+      {q: '১৮৩০-এর দশকে আফ্রিকার কোন্ অঞ্চলে ফরাসি আধিপত্য প্রতিষ্ঠিত হয়?', opts: ['আলজেরিয়ায়', 'মরক্কোয়', 'টিউনিসিয়ায়', 'সুদানে'], ans: 0, exp: '১৮৩০-এর দশকে আলজেরিয়ায় ফরাসি আধিপত্য প্রতিষ্ঠিত হয়। পরে ১৮৮১-তে টিউনিসিয়া এবং ১৯১২-তে মরক্কোয় তারা আধিপত্য বিস্তার করে।'},
+      {q: 'কোন্ বছর ইটালি লিবিয়া জয় করে?', opts: ['১৮৮২ খ্রিস্টাব্দে', '১৮৮৫ খ্রিস্টাব্দে', '১৯১১ খ্রিস্টাব্দে', '১৯৩৫ খ্রিস্টাব্দে'], ans: 2, exp: 'সাম্রাজ্য বিস্তারের আকাঙ্ক্ষায় ইটালি ১৯১১ খ্রিস্টাব্দে লিবিয়া জয় করে।'},
+      {q: '১৬২৪ খ্রিস্টাব্দে ক্যারিবিয়ান দ্বীপ এবং ১৬৬৫ খ্রিস্টাব্দে জামাইকায় কোন্ দেশের কোম্পানি উপনিবেশ প্রতিষ্ঠা করে?', opts: ['পোর্তুগাল', 'ইংল্যান্ড', 'ফ্রান্স', 'স্পেন'], ans: 1, exp: 'ইংরেজ ইস্ট ইন্ডিয়া কোম্পানি ভারতের পাশাপাশি ক্যারিবিয়ান দ্বীপপুঞ্জ এবং জামাইকাতেও তাদের উপনিবেশ বিস্তার করেছিল।'}
+    ]
+  },
+  3: {
+    name: 'Set 3',
+    icon: '🌏',
+    topic: 'এশিয়ায় উপনিবেশ বিস্তার (ভারত ও সন্নিহিত অঞ্চল)',
+    questions: [
+      {q: '১৪৯৮ খ্রিস্টাব্দে ভাস্কো-দা-গামা ভারতের পশ্চিম উপকূলে কালিকট বন্দরে পৌঁছোলে কোন্ হিন্দু রাজা তাঁকে সংবর্ধনা জানান?', opts: ['সিরাজ-উদ্‌-দৌলা', 'জামোরিন', 'প্রতাপরুদ্র', 'মার্তণ্ড বর্মা'], ans: 1, exp: 'পোর্তুগিজ নাবিক ভাস্কো-দা-গামা ১৪৯৮ খ্রিস্টাব্দে ভারতের পশ্চিম উপকূলে এলে সেখানকার হিন্দু রাজা জামোরিন তাঁকে সংবর্ধনা জানিয়েছিলেন।'},
+      {q: '১৮১৬ খ্রিস্টাব্দে ইংরেজ ইস্ট ইন্ডিয়া কোম্পানির সঙ্গে নেপালের গোরখাদের কোন্ সন্ধি স্বাক্ষরিত হয়?', opts: ['সগৌলির সন্ধি', 'অ্যামিয়েন্সের সন্ধি', 'ইয়ান্দাবুর সন্ধি', 'গন্ডমাকের সন্ধি'], ans: 0, exp: 'ইঙ্গ-নেপাল যুদ্ধের (১৮১৪-১৬ খ্রি.) পর গোরখারা পরাজিত হয়ে ১৮১৬ খ্রিস্টাব্দে সগৌলির সন্ধি স্বাক্ষরে বাধ্য হয়।'},
+      {q: 'প্রথম ইঙ্গ-ব্রহ্ম যুদ্ধের পর ১৮২৬ খ্রিস্টাব্দে কোন্ সন্ধি স্বাক্ষরিত হয়?', opts: ['সগৌলির সন্ধি', 'গন্ডমাকের সন্ধি', 'ইয়ান্দাবুর সন্ধি', 'নানকিং-এর সন্ধি'], ans: 2, exp: 'প্রথম ইঙ্গ-ব্রহ্ম যুদ্ধে (১৮২৪-২৬ খ্রি.) ব্রহ্মদেশের রাজা পরাজিত হয়ে ১৮২৬ খ্রিস্টাব্দে ইংরেজদের সঙ্গে ইয়ান্দাবুর সন্ধি স্বাক্ষর করেন।'},
+      {q: 'ইয়ান্দাবুর সন্ধির ফলে ইংরেজ কোম্পানি ব্রহ্মরাজের কাছ থেকে কোন্ কোন্ অঞ্চল লাভ করে?', opts: ['পেগু ও রেঙ্গুন', 'আরাকান ও টেনাসেরিম', 'আসাম ও কাছাড়', 'প্রোম ও মান্দালয়'], ans: 1, exp: 'ইয়ান্দাবুর সন্ধির শর্তানুসারে কোম্পানি ব্রহ্মরাজের কাছ থেকে আরাকান ও টেনাসেরিম লাভ করে।'},
+      {q: '১৮৭৯ খ্রিস্টাব্দে দ্বিতীয় ইঙ্গ-আফগান যুদ্ধের পর আফগান আমির শের আলির পুত্র ইয়াকুব খানের সঙ্গে ইংরেজদের কোন্ সন্ধি স্বাক্ষরিত হয়?', opts: ['পেশোয়ারের সন্ধি', 'সগৌলির সন্ধি', 'কাবুলের সন্ধি', 'গন্ডমাকের সন্ধি'], ans: 3, exp: 'লর্ড লিটন আফগানিস্তান আক্রমণ করলে পরাজিত আমির শের আলি পালিয়ে যান এবং তাঁর পুত্র ইয়াকুব খান ইংরেজদের সাথে গন্ডমাকের সন্ধি (১৮৭৯ খ্রি.) স্বাক্ষর করেন।'},
+      {q: '১৮০২ খ্রিস্টাব্দে কোন্ সন্ধির দ্বারা সিংহল বা শ্রীলঙ্কা ইংল্যান্ডের অধিকারে আসে?', opts: ['অ্যামিয়েন্সের সন্ধি', 'প্যারিসের সন্ধি', 'টরডিসিল্লাস চুক্তি', 'বার্লিন চুক্তি'], ans: 0, exp: 'সপ্তদশ শতকে সিংহল ডাচদের হাতে থাকলেও ১৮০২ খ্রিস্টাব্দে অ্যামিয়েন্সের সন্ধির দ্বারা তা ইংল্যান্ডের অধিকারে আসে।'},
+      {q: 'সিংহলে বা শ্রীলঙ্কায় ইংরেজরা সর্বপ্রথম কোন্ কোন্ চাষ শুরু করে?', opts: ['তুলা ও রেশম', 'চা ও রবার', 'নীল ও কফি', 'আফিম ও মশলা'], ans: 1, exp: 'সিংহলে ইংরেজরাই সর্বপ্রথম চা ও রবারের চাষ শুরু করে এবং এটি ব্রিটিশদের অন্যতম প্রধান কাঁচামাল রপ্তানিকারক দেশে পরিণত হয়।'},
+      {q: 'ইন্দোনেশিয়া বা ইস্ট ইন্ডিজে কাদের আধিপত্য প্রতিষ্ঠিত হয়েছিল?', opts: ['ইংরেজদের', 'ফরাসিদের', 'ডাচ বা ওলন্দাজদের', 'পোর্তুগিজদের'], ans: 2, exp: 'সপ্তদশ শতক নাগাদ হল্যান্ডের ডাচ বা ওলন্দাজরা ইন্দোনেশিয়া (জাভা, সুমাত্রা, বোর্নিও) অঞ্চলে আধিপত্য প্রতিষ্ঠা করে।'},
+      {q: 'মালয় কোন্ কোন্ সম্পদ উৎপাদনের অন্যতম গুরুত্বপূর্ণ কেন্দ্র ছিল?', opts: ['সোনা ও রূপা', 'টিন ও রবার', 'চা ও কফি', 'মশলা ও নীল'], ans: 1, exp: 'মালয় ছিল টিন ও রবার উৎপাদনের অন্যতম গুরুত্বপূর্ণ কেন্দ্র। ষোড়শ শতকে পোর্তুগিজরা এবং পরে ইংরেজরা এখানে আধিপত্য প্রতিষ্ঠা করে।'},
+      {q: 'চিনের করদ রাজ্য ইন্দোচিনে অষ্টাদশ শতকের শেষপর্বে কোন্ ইউরোপীয় শক্তির আধিপত্য প্রতিষ্ঠিত হয়?', opts: ['স্পেনের', 'ফরাসিদের', 'ডাচদের', 'ইংরেজদের'], ans: 1, exp: 'ইন্দোচিন চিনের করদ রাজ্য হলেও সেখানে ফরাসি আধিপত্য প্রতিষ্ঠিত হয়।'},
+      {q: 'দক্ষিণ-পূর্ব এশিয়ায় শ্যামদেশের বর্তমান নাম কী?', opts: ['মায়ানমার', 'থাইল্যান্ড', 'ভিয়েতনাম', 'মালয়েশিয়া'], ans: 1, exp: 'ইন্দোচিন ও ব্রহ্মদেশের মধ্যবর্তী স্থানে শ্যামদেশ অবস্থিত, যার বর্তমান নাম থাইল্যান্ড।'},
+      {q: 'ফিলিপিন্স দ্বীপপুঞ্জে প্রথম উপনিবেশ কে তৈরি করেছিলেন?', opts: ['ভাস্কো-দা-গামা', 'কলম্বাস', 'স্পেনীয় নাবিক ম্যাগেলান', 'জন ক্যাবট'], ans: 2, exp: 'দক্ষিণ-পূর্ব এশিয়ায় অবস্থিত ফিলিপিন্স দ্বীপপুঞ্জে প্রথম উপনিবেশ তৈরি করেছিলেন স্পেনীয় নাবিক ম্যাগেলান।'},
+      {q: '১৮৯৮ খ্রিস্টাব্দে স্পেনের কাছ থেকে কারা ফিলিপিন্স দ্বীপপুঞ্জ দখল করে নেয়?', opts: ['আমেরিকা', 'ইংল্যান্ড', 'ফ্রান্স', 'পোর্তুগাল'], ans: 0, exp: 'ফিলিপিন্সবাসীর বিদ্রোহের সুযোগ নিয়ে আমেরিকা স্পেনের বিরুদ্ধে যুদ্ধে নামে এবং ১৮৯৮ খ্রিস্টাব্দে ফিলিপিন্স দ্বীপপুঞ্জে আমেরিকার আধিপত্য প্রতিষ্ঠিত হয়।'},
+      {q: '১৮৯৩ খ্রিস্টাব্দে আমেরিকা কোন্ দ্বীপপুঞ্জ দখল করে সেখানে প্রজাতন্ত্র প্রতিষ্ঠা করে?', opts: ['আন্দামান', 'হাওয়াই দ্বীপপুঞ্জ', 'ফিজি দ্বীপপুঞ্জ', 'মালদ্বীপ'], ans: 1, exp: 'আমেরিকা ১৮৯৩ খ্রিস্টাব্দে হাওয়াই দ্বীপপুঞ্জ দখল করে প্রজাতন্ত্র প্রতিষ্ঠা করে এবং এর পাঁচ বছর পর তা সম্পূর্ণরূপে আমেরিকার অন্তর্ভুক্ত হয়।'},
+      {q: 'লর্ড ডালহৌসি কোন্ ইঙ্গ-ব্রহ্ম যুদ্ধের মাধ্যমে পেগু বা দক্ষিণ ব্রহ্ম ব্রিটিশ সাম্রাজ্যভুক্ত করেন?', opts: ['প্রথম ইঙ্গ-ব্রহ্ম যুদ্ধ', 'দ্বিতীয় ইঙ্গ-ব্রহ্ম যুদ্ধ', 'তৃতীয় ইঙ্গ-ব্রহ্ম যুদ্ধ', 'চতুর্থ ইঙ্গ-ব্রহ্ম যুদ্ধ'], ans: 1, exp: '১৮৫২ খ্রিস্টাব্দে সংঘটিত দ্বিতীয় ইঙ্গ-ব্রহ্ম যুদ্ধে রাজা পরাজিত হলে লর্ড ডালহৌসি পেগু বা দক্ষিণ ব্রহ্ম দখল করে ব্রিটিশ সাম্রাজ্যভুক্ত করেন।'}
+    ]
+  },
+  4: {
+    name: 'Set 4',
+    icon: '🌏',
+    topic: 'দূরপ্রাচ্যে উপনিবেশ বিস্তার (চিন ও জাপান)',
+    questions: [
+      {q: '১৯০৭ খ্রিস্টাব্দে ইঙ্গ-রুশ কনভেনশনের ফলে কোন্ দেশ ইংল্যান্ড ও রাশিয়ার মধ্যে দুটি প্রভাব-বলয়ে বিভক্ত হয়ে যায়?', opts: ['আফগানিস্তান', 'পারস্য', 'মিশর', 'চিন'], ans: 1, exp: 'মধ্যপ্রাচ্যের পারস্যে ইংল্যান্ড ও রাশিয়ার দ্বন্দ্ব মেটাতে ১৯০৭ খ্রিস্টাব্দে ইঙ্গ-রুশ কনভেনশন স্বাক্ষরিত হয়।'},
+      {q: '১৮৫৪ খ্রিস্টাব্দে মার্কিন সেনাপতি কমোডোর ম্যাথু পেরি সাতটি যুদ্ধজাহাজ নিয়ে জাপানের কোন্ বন্দরে উপস্থিত হন?', opts: ['টোকিও', 'হিরোশিমা', 'নাগাসাকি', 'ইয়েডো বন্দরে'], ans: 3, exp: 'চার হাজার মার্কিন সৈন্য এবং সাতটি যুদ্ধজাহাজ নিয়ে কমোডোর ম্যাথু পেরি জাপানের ইয়েডো বন্দরে উপস্থিত হন।'},
+      {q: 'ম্যাথু পেরির অভিযানের ফলে জাপান আমেরিকার সঙ্গে কোন্ অপমানজনক সন্ধি স্বাক্ষর করতে বাধ্য হয়?', opts: ['শিমোনোসেকির সন্ধি', 'কানাগাওয়ার সন্ধি', 'পোর্টসমাউথের সন্ধি', 'নানকিং-এর সন্ধি'], ans: 1, exp: 'ভীত শোগুন-সরকার ১৮৫৪ খ্রিস্টাব্দে আমেরিকার সঙ্গে কানাগাওয়ার সন্ধি স্বাক্ষরে বাধ্য হয়।'},
+      {q: 'জাপানের কাছ থেকে ইউরোপীয়রা যে অতি-রাষ্ট্রিক অধিকার (Extraterritorial Rights) আদায় করেছিল, তার অর্থ কী ছিল?', opts: ['জাপানকে কর দেওয়া থেকে মুক্তি', 'বিদেশি নাগরিকরা জাপানে বসবাস করলেও জাপানি শাসকের অধীনতা থেকে মুক্ত থাকবে', 'জাপানিদের বিনা বিচারে শাস্তি দেওয়া', 'জাপানের সমস্ত খনির মালিকানা লাভ'], ans: 1, exp: 'কানাগাওয়ার সন্ধির দেখাদেখি ইংল্যান্ড, রাশিয়া ও হল্যান্ড জাপানের সঙ্গে চুক্তি করে এই অতি-রাষ্ট্রিক অধিকার আদায় করে।'},
+      {q: 'প্রথম আফিম যুদ্ধ বা প্রথম ইঙ্গ-চিন যুদ্ধের (১৮৩৯-৪২ খ্রি.) পর চিনের মাঞ্চু শাসকরা ইংরেজদের সঙ্গে কোন্ সন্ধি স্বাক্ষর করতে বাধ্য হয়?', opts: ['তিয়েনসিন-এর সন্ধি', 'নানকিং-এর সন্ধি', 'শিমোনোসেকির সন্ধি', 'পিকিং-এর সন্ধি'], ans: 1, exp: 'চিনে ইংরেজদের আফিম বাণিজ্যকে কেন্দ্র করে এই যুদ্ধ শুরু হয়। পরাজিত হয়ে চিন ১৮৪২ খ্রিস্টাব্দে নানকিং-এর সন্ধি স্বাক্ষর করে।'},
+      {q: 'নানকিং-এর সন্ধির ফলে ইংরেজরা চিনের কোন্ অঞ্চলটি লাভ করে?', opts: ['তাইওয়ান', 'ম্যাকাও', 'হংকং', 'সাংহাই'], ans: 2, exp: 'নানকিং সন্ধির শর্তানুসারে ইংরেজরা হংকং লাভ করে এবং ক্যান্টন-সহ পাঁচটি বন্দর ইউরোপীয়দের বাণিজ্যের জন্য খুলে দেওয়া হয়।'},
+      {q: 'দ্বিতীয় আফিম যুদ্ধ বা দ্বিতীয় ইঙ্গ-চিন যুদ্ধের (১৮৫৬-৫৮ খ্রি.) পর চিনের সঙ্গে ইংল্যান্ড ও ফ্রান্সের কোন্ সন্ধি স্বাক্ষরিত হয়?', opts: ['তিয়েনসিন-এর সন্ধি', 'নানকিং-এর সন্ধি', 'প্যারি চুক্ত', 'শিমোনোসেকি সন্ধি'], ans: 0, exp: 'দ্বিতীয় আফিম যুদ্ধে পরাজিত হয়ে চিন ১৮৫৮ খ্রিস্টাব্দে তিয়েনসিন-এর সন্ধি স্বাক্ষর করতে বাধ্য হয়।'},
+      {q: 'চিন-জাপান যুদ্ধের (১৮৯৪-৯৫ খ্রি.) পর চিন জাপানের সঙ্গে কোন্ সন্ধি স্বাক্ষরে বাধ্য হয়?', opts: ['কানাগাওয়ার সন্ধি', 'পোর্টসমাউথের সন্ধি', 'শিমোনোসেকির সন্ধি', 'ইয়ান্দাবুর সন্ধি'], ans: 2, exp: '১৮৯৪ খ্রিস্টাব্দে জাপান কোরিয়া দখলের জন্য চিন আক্রমণ করে। পরাজিত চিন ১৮৯৫ খ্রিস্টাব্দে শিমোনোসেকির সন্ধি স্বাক্ষর করে।'},
+      {q: 'রাশিয়া চিনের মোঙ্গোলিয়ার আমুর উপত্যকা দখল করে সেখানে কোন্ বন্দর স্থাপন করে?', opts: ['পোর্ট আর্থার', 'ভ্লাডিভোস্টক বন্দর', 'ক্যান্টন', 'সাংহাই'], ans: 1, exp: 'রুশ আগ্রাসনের অংশ হিসেবে রাশিয়া আমুর উপত্যকা দখল করে ভ্লাডিভোস্টক বন্দর স্থাপন করে।'},
+      {q: 'বিদেশি উপনিবেশিক শক্তিগুলি কর্তৃক চিনের বিভিন্ন অঞ্চল নিজেদের মধ্যে বাঁটোয়ারা করে নেওয়াকে ইতিহাসবিদ ভিনাক কীসের সঙ্গে তুলনা করেছেন?', opts: ['তরবারি খণ্ডন', 'চিনা তরমুজ (Chinese Melon) খণ্ড খণ্ড করার সঙ্গে', 'ড্রাগন বধ', 'চিনের কফিনে পেরেক'], ans: 1, exp: 'চিনের ওপর আধিপত্য বিস্তারে ইউরোপীয় দেশগুলোর কাড়াকাড়িকে চিনের খণ্ডীকরণ বলা হয়, ভিনাক একে চিনা তরমুজ খণ্ড খণ্ড করার সাথে তুলনা করেছেন।'},
+      {q: 'চিনে ইউরোপীয় শক্তিগুলির আধিপত্য বিস্তারের ফলে মার্কিন পররাষ্ট্র-সচিব স্যার জন হে ১৮৯৯ খ্রিস্টাব্দে কোন্ নীতি ঘোষণা করেন?', opts: ['একুশ দফা দাবি', 'মনরো নীতি', 'উন্মুক্ত দ্বার নীতি (Open Door Policy)', 'শ্বেতাঙ্গদের দায়বদ্ধতা'], ans: 2, exp: 'চিনে বাণিজ্যের সুযোগ যাতে হাতছাড়া না হয়, সেই শঙ্কায় স্যার জন হে ঘোষণা করেন যে চিনের সব অঞ্চলে আমেরিকাকে বাণিজ্যের সমান সুযোগ দিতে হবে।'},
+      {q: 'পণ্ডিত জওহরলাল নেহরু আমেরিকার উন্মুক্ত দ্বার নীতিকে কী বলে অভিহিত করেছেন?', opts: ['উন্মুক্ত সাম্রাজ্যবাদ', 'অদৃশ্য সাম্রাজ্যবাদ (Invisible Imperialism)', 'অর্থনৈতিক দাসত্ব', 'নয়া উপনিবেশবাদ'], ans: 1, exp: 'জওহরলাল নেহরু মনে করতেন, এটি সরাসরি ভূমি দখল না করলেও বাণিজ্যের আড়ালে আমেরিকার এক ধরনের সাম্রাজ্যবাদ।'},
+      {q: '১৯০০ খ্রিস্টাব্দে চিনে কোন্ বিখ্যাত বিদ্রোহ সংঘটিত হয়, যার সুযোগে রুশ সেনাবাহিনী মাঞ্চুরিয়া দখল করে?', opts: ['তাইপিং বিদ্রোহ', 'মাঞ্চু বিদ্রোহ', 'বক্সার বিদ্রোহ', 'হোয়াইট লোটাস বিদ্রোহ'], ans: 2, exp: '১৯০০ খ্রিস্টাব্দে বক্সার বিদ্রোহের সময় মাঞ্চুরিয়ার রেলপথ রক্ষার অজুহাতে রুশ বাহিনী সেখানে প্রবেশ করে মাঞ্চুরিয়া দখল করে নেয়।'},
+      {q: 'রুশ-জাপান যুদ্ধে (১৯০৪-১৯০৫ খ্রি.) রাশিয়া পরাজিত হয়ে জাপানের সঙ্গে কোন্ সন্ধি স্বাক্ষর করে?', opts: ['শিমোনোসেকির সন্ধি', 'পোর্টসমাউথের সন্ধি', 'তিয়েনসিনের সন্ধি', 'কানাগাওয়ার সন্ধি'], ans: 1, exp: 'মাঞ্চুরিয়া দখল নিয়ে রাশিয়া ও জাপানের দ্বন্দ্বে রাশিয়া পরাজিত হয় এবং ১৯০৫ খ্রিস্টাব্দে পোর্টসমাউথের সন্ধি স্বাক্ষরে বাধ্য হয়।'},
+      {q: 'প্রথম বিশ্বযুদ্ধের সময় জাপান চিনের ওপর যে বিখ্যাত দাবিটি চাপিয়ে দেয়, সেটি কী নামে পরিচিত?', opts: ['মুক্তদ্বার নীতি', 'একুশ দফা দাবি', 'পঁচিশ দফা দাবি', 'এগারো দফা দাবি'], ans: 1, exp: '১৯১৫ খ্রিস্টাব্দে জাপান চিনের জার্মান উপনিবেশ শান্টুং দখল করে চিনের ওপর এই একুশ দফা দাবি চাপিয়ে দেয়।'}
+    ]
+  },
+  5: {
+    name: 'Set 5',
+    icon: '🌎',
+    topic: 'নতুন বিশ্বে উপনিবেশ বিস্তার (প্রথম ভাগ)',
+    questions: [
+      {q: 'নতুন বিশ্ব বা New World (Mundus Novus) শব্দটি প্রথম কে ব্যবহার করেন?', opts: ['ক্রিস্টোফার কলম্বাস', 'আমেরিগো ভেসপুচি', 'ভাস্কো-দা-গামা', 'পেড্রো আলভারেজ কেব্রাল'], ans: 1, exp: '১৫০৩ খ্রিস্টাব্দে লরেঞ্জো দা মেডিচিকে লেখা এক চিঠিতে ইতালীয় নাবিক আমেরিগো ভেসপুচি কলম্বাস আবিষ্কৃত মহাদেশটিকে Mundus Novus বা New World বলে উল্লেখ করেন।'},
+      {q: 'কলম্বাসের পদার্পণের (১৪৯২ খ্রি.) আগে আমেরিকা মহাদেশে কোন্ স্থানীয় আদিবাসীরা বসবাস করত?', opts: ['মাওরি', 'অ্যাবোরিজিন', 'রেড ইন্ডিয়ান', 'জুলু'], ans: 2, exp: 'কলম্বাস ভারতে আসার পথ খুঁজতে গিয়ে আমেরিকায় পৌঁছে তাদের ভুলবশত ইন্ডিয়ান ভেবেছিলেন, যারা ইতিহাসে রেড ইন্ডিয়ান নামে পরিচিত।'},
+      {q: 'নতুন বিশ্বে কৃষি উৎপাদন সচল রাখতে আফ্রিকা থেকে প্রচুর ক্রীতদাস আটলান্টিক মহাসাগর পার করে আমেরিকায় রপ্তানি করা হত। এটি কী নামে পরিচিত ছিল?', opts: ['প্যাসিফিক স্লেভ ট্রেড', 'আটলান্টিক ক্রীতদাস ব্যাবসা (Atlantic Slave Trade)', 'আফ্রিকান স্লেভ রুট', 'ব্ল্যাক মার্কেট ট্রেড'], ans: 1, exp: 'কৃষিখামারে শ্রমিকের অভাব মেটাতে আফ্রিকা থেকে অন্তত ১ কোটি থেকে ১.২ কোটি কৃষ্ণাঙ্গ ক্রীতদাস নতুন বিশ্বে জোরপূর্বক আমদানি করা হয়েছিল।'},
+      {q: 'কোন্ স্পেনীয় নাবিক মেক্সিকো দখল করে আজটেক সভ্যতা ধ্বংস করেন?', opts: ['ফ্রান্সিসকো পিজারো', 'ম্যাগেলান', 'হার্নান কোর্টেস', 'ক্রিস্টোফার কলম্বাস'], ans: 2, exp: 'স্পেনীয় নাবিক হার্নান কোর্টেস ১৫১৯-২১ খ্রিস্টাব্দের মধ্যে মেক্সিকো দখল করে প্রাচীন আজটেক সভ্যতা ধ্বংস করেছিলেন।'},
+      {q: 'কোন্ স্পেনীয় নাবিক পেরু দখল করেন ও ইনকা সভ্যতা ধ্বংস করেন?', opts: ['হার্নান কোর্টেস', 'ফ্রান্সিসকো পিজারো', 'ভাস্কো-দা-গামা', 'জন ক্যাবট'], ans: 1, exp: '১৫৩২ খ্রিস্টাব্দে স্পেনীয় নাবিক ফ্রান্সিসকো পিজারো পেরু আক্রমণ করে সেখানকার সমৃদ্ধ ইনকা সভ্যতা ধ্বংস করেছিলেন।'},
+      {q: 'স্পেনের উপনিবেশকে পুরোনো স্পেনের নির্ভরশীল রাজবংশ না বলে কী বলা হত?', opts: ['সিস্টার কিংডম (Sister Kingdom) বা ভাগিনী রাজ্য', 'মাদার কলোনি', 'নিউ স্পেন', 'গোল্ডেন স্টেট'], ans: 0, exp: 'বিশাল স্পেনীয় উপনিবেশে শাসনব্যবস্থার সাথে স্পেনীয় রাজবংশের প্রতিনিধিরা যুক্ত ছিলেন বলে একে ভাগিনী রাজ্য বলা হত।'},
+      {q: 'স্পেনের উপনিবেশগুলি শাসন করার জন্য বাণিজ্যের তদারকি করতে ১৫০৩ খ্রিস্টাব্দে কোন্ প্রতিষ্ঠান গড়ে তোলা হয়?', opts: ['ডাচ ওয়েস্ট ইন্ডিয়া কোম্পানি', 'Casa de Contractacion', 'Council of Indies', 'স্প্যানিশ ট্রেড গিল্ড'], ans: 1, exp: 'এটি সবরকমের বাণিজ্য দেখাশোনা, লাইসেন্স প্রদান এবং জাহাজগুলির তত্ত্বাবধান করত।'},
+      {q: 'ষোড়শ শতকের মাঝামাঝি সময়ে আমেরিকায় স্পেনীয়দের বসতি গড়ে ওঠে মূলত কোন্ অঞ্চলকে কেন্দ্র করে, যা সোনা ও রূপোর খনির জন্য বিখ্যাত ছিল?', opts: ['ক্যালিফোর্নিয়া', 'হাভানা', 'পোটোসি (Potosi)', 'লিমা'], ans: 2, exp: 'সোনা ও রূপোর খনি অঞ্চলকে কেন্দ্র করে বসতি গড়ে ওঠে, যার মধ্যে সর্বাধিক উল্লেখযোগ্য ছিল পোটোসি।'},
+      {q: 'আমেরিকা মহাদেশে স্পেনের ঔপনিবেশিক অর্থনীতির মূল ভিত্তি কী ছিল?', opts: ['ফারের বাণিজ্য', 'মূল্যবান ধাতুনিষ্কাশনের কাজ', 'তুলো উৎপাদন', 'রবার চাষ'], ans: 1, exp: 'স্পেনীয়রা দাস শ্রমিক এনে মূলত খনি থেকে সোনা ও রূপা সংগ্রহের কাজ করাত।'},
+      {q: '১৪৯৭ খ্রিস্টাব্দে কোন্ ইংরেজ নাবিক ইংল্যান্ডের রাজা সপ্তম হেনরির পৃষ্ঠপোষকতায় ম্যাথু নামক জাহাজে আটলান্টিক অতিক্রম করে নিউফাউন্ডল্যান্ডে পৌঁছোন?', opts: ['জন ক্যাবট', 'মার্টিন ফ্রোবিশার', 'জন ডেভিস', 'হেনরি হাডসন'], ans: 0, exp: 'ইংল্যান্ডের সামুদ্রিক অভিযানের প্রাথমিক উদ্যোগে জন ক্যাবট আমেরিকায় পৌঁছোন।'},
+      {q: 'স্যার হামফ্রে গিলবার্ট কোন্ দেশে ব্রিটিশ উপনিবেশ স্থাপনের পথিকৃৎ ছিলেন?', opts: ['ভারতে', 'আফ্রিকায়', 'আমেরিকায়', 'অস্ট্রেলিয়ায়'], ans: 2, exp: 'তিনি সরকারি সনদের মাধ্যমে আমেরিকায় প্রথম ব্রিটিশ উপনিবেশ প্রতিষ্ঠার অধিকার পান।'},
+      {q: 'আমেরিকায় ব্রিটিশরা মোট কয়টি উপনিবেশ প্রতিষ্ঠা করেছিল, যা একত্রে একটি নামে পরিচিত ছিল?', opts: ['১০টি উপনিবেশ', '১৩টি উপনিবেশ (ত্রয়োদশ উপনিবেশ)', '১৫টি উপনিবেশ', '৫০টি উপনিবেশ'], ans: 1, exp: 'অষ্টাদশ শতকের মধ্যে পূর্ব উপকূলবর্তী অঞ্চলে ব্রিটিশরা তেরোটি উপনিবেশ স্থাপন করেছিল।'},
+      {q: 'আমেরিকার তেরোটি ব্রিটিশ উপনিবেশ কবে ইংল্যান্ডের অধীনতা ছিন্ন করে স্বাধীনতা ঘোষণা করে?', opts: ['১৭৫৭ খ্রিস্টাব্দে', '১৭৬২ খ্রিস্টাব্দে', '১৭৭৬ খ্রিস্টাব্দে', '১৭৮৩ খ্রিস্টাব্দে'], ans: 2, exp: 'তীব্র শোষণ ও অত্যচারের প্রতিবাদে ১৭৭৬ খ্রিস্টাব্দে আমেরিকার ব্রিটিশ উপনিবেশগুলি ইংল্যান্ডের অধীনতা ছিন্ন করে স্বাধীনতা ঘোষণা করে।'},
+      {q: 'আমেরিকার স্বাধীনতা যুদ্ধের পর কোন্ সালে ব্রিটেন আমেরিকার স্বাধীনতাকে স্বীকৃতি দিতে বাধ্য হয়?', opts: ['১৭৭৬ খ্রিস্টাব্দে', '১৭৮৩ খ্রিস্টাব্দে', '১৮১৫ খ্রিস্টাব্দে', '১৮২০ খ্রিস্টাব্দে'], ans: 1, exp: 'দীর্ঘ যুদ্ধের পর ব্রিটেন ১৭৮৩ খ্রিস্টাব্দে আমেরিকার স্বাধীনতা মেনে নেয়।'},
+      {q: '১৮০৮ খ্রিস্টাব্দে ফরাসি সম্রাট নেপোলিয়ন স্পেন দখল করে নিজ ভ্রাতা জোসেফকে সিংহাসনে বসালে এর পরিণতি কী হয়?', opts: ['স্পেনের উপনিবেশগুলির উন্নতি হয়', 'স্পেনের সঙ্গে আমেরিকার উপনিবেশগুলির সম্পর্ক ছিন্ন হয় এবং চিলি, আর্জেন্টিনা প্রভৃতি রাষ্ট্র স্পেনের অধীনতা থেকে মুক্তি পায়', 'ফরাসিরা স্পেনের সব উপনিবেশ দখল করে নেয়', 'স্পেন নতুন করে আমেরিকায় সৈন্য পাঠায়'], ans: 1, exp: 'স্পেনের অভ্যন্তরীণ রাজনৈতিক সংকটের সুযোগে দক্ষিণ আমেরিকার বহু স্পেনীয় উপনিবেশ স্বাধীন হয়ে যায়।'}
+    ]
+  },
+  6: {
+    name: 'Set 6',
+    icon: '🌎',
+    topic: 'নতুন বিশ্বে উপনিবেশ বিস্তার (দ্বিতীয় ভাগ)',
+    questions: [
+      {q: '১৫০০ খ্রিস্টাব্দে পোর্তুগিজ নাবিক পেড্রো কেব্রাল দক্ষিণ আমেরিকার কোন্ স্থানে পদার্পণ করেন, যা পরে পোর্তুগিজ উপনিবেশে পরিণত হয়?', opts: ['পেরু', 'মেক্সিকো', 'ব্রাজিল', 'কিউবা'], ans: 2, exp: 'পোর্তুগিজ নাবিক পেড্রো কেব্রাল ১৫০০ খ্রিস্টাব্দে ব্রাজিলে পদার্পণ করেন এবং তাঁর উদ্যোগেই ব্রাজিলে পোর্তুগিজদের উপনিবেশ স্থাপিত হয়।'},
+      {q: '১৮২২ খ্রিস্টাব্দে কে পোর্তুগালের অধীনতা ছিন্ন করে নিজেকে ব্রাজিলের স্বাধীন সম্রাট বলে ঘোষণা করেন?', opts: ['রাজা ষষ্ঠ জোয়াও', 'ডোম পেড্রো (Dom Pedro)', 'সাইমন বলিভার', 'নেপোলিয়ন'], ans: 1, exp: 'রাজা ষষ্ঠ জোয়াও-এর পুত্র ডোম পেড্রো ১৮২২ খ্রিস্টাব্দে পোর্তুগালের অধীনতা ছিন্ন করে ব্রাজিলকে স্বাধীন ঘোষণা করেন।'},
+      {q: 'ফ্রান্সের কোন্ নাবিক ১৫৩৫ খ্রিস্টাব্দে সেন্ট লরেন্স নদী বরাবর অভিযান পাঠিয়ে কুইবেক-এ উপনিবেশ স্থাপনের পরিকল্পনা করেন?', opts: ['স্যামুয়েল দ্য শ্যাম্পলেন', 'জ্যাক কার্টিয়ার', 'জোসেফ দুপ্লে', 'কলম্বাস'], ans: 1, exp: 'ফরাসি নাবিক জ্যাক কার্টিয়ার কুইবেক-এ একটি উপনিবেশ প্রতিষ্ঠার পরিকল্পনা করেছিলেন, যেখানে ১৬০৮ খ্রিস্টাব্দে উপনিবেশ গড়ে ওঠে।'},
+      {q: 'উত্তর আমেরিকার কানাডায় ফরাসি উপনিবেশ প্রতিষ্ঠায় কোন্ ফরাসি বণিক অগ্রণী ভূমিকা পালন করেন?', opts: ['জ্যাক কার্টিয়ার', 'স্যামুয়েল দ্য শ্যাম্পলেন', 'কাউন্ট লালি', 'জোসেফ বোনাপার্ট'], ans: 1, exp: 'তিনি ফরাসি ইস্ট ইন্ডিয়া কোম্পানির অধীনে আকাডিয়ার (নোভাস্কোসিয়া) পোর্ট রয়্যাল-এ একটি উপনিবেশ স্থাপন করেন।'},
+      {q: 'কানাডা অঞ্চলে ফরাসি বণিকদের প্রধান আকর্ষণ কীসের ব্যাবসা ছিল?', opts: ['সোনার খনি', 'ফারের বাণিজ্য (Fur Trade)', 'মশলার ব্যাবসা', 'ক্রীতদাস ব্যাবসা'], ans: 1, exp: 'কানাডা অঞ্চলে ফারের বাণিজ্যের প্রতি আগ্রহই ফরাসি বণিকদের এখানে অভিযান পাঠাতে সবচেয়ে বেশি উৎসাহিত করেছিল।'},
+      {q: '১৭৫৯-৬৩ খ্রিস্টাব্দের মধ্যে সপ্তবর্ষের যুদ্ধে ফরাসিরা কাদের কাছে পরাজিত হয়ে কানাডা অঞ্চল হারায়?', opts: ['ডাচদের কাছে', 'স্পেনীয়দের কাছে', 'ব্রিটিশদের কাছে', 'পোর্তুগিজদের কাছে'], ans: 2, exp: 'সপ্তবর্ষের যুদ্ধে পরাজয়ের ফলে ফরাসিদের অধীনস্থ কানাডা ব্রিটিশদের দখলে চলে যায়।'},
+      {q: 'ওলন্দাজ বা ডাচরা আমেরিকায় অনুপ্রবেশের জন্য ১৬১২ খ্রিস্টাব্দে কোন্ কোম্পানি গঠন করে?', opts: ['ডাচ ওয়েস্ট ইন্ডিয়া কোম্পানি', 'ইউনাইটেড ডাচ কোম্পানি', 'ডাচ ইস্ট ইন্ডিয়া কোম্পানি', 'ডাচ আমেরিকান কোম্পানি'], ans: 0, exp: 'ক্যারিবিয়ান অঞ্চল এবং আমেরিকায় আধিপত্য বিস্তারের উদ্দেশ্যে ১৬১২ খ্রিস্টাব্দে ডাচ ওয়েস্ট ইন্ডিয়া কোম্পানি গড়ে ওঠে।'},
+      {q: '১৬০৯ খ্রিস্টাব্দে ইংরেজ অভিযাত্রী হাডসনকে আমেরিকা মহাদেশে কোন্ দেশ উপনিবেশ স্থাপনের উদ্দেশ্যে নিয়োগ করেছিল?', opts: ['ইংল্যান্ড', 'ডাচ বা ওলন্দাজরা', 'ফ্রান্স', 'স্পেন'], ans: 1, exp: 'ডাচরা হাডসনকে নিয়োগ করে এবং তাঁর নামানুসারে হাডসন নদী বরাবর ডাচদের নিউ আমস্টারডাম উপনিবেশ স্থাপিত হয়।'},
+      {q: 'ডাচদের দ্বারা প্রতিষ্ঠিত নিউ আমস্টারডাম শহরের নাম পরিবর্তন করে ইংরেজরা ১৬৬৪ খ্রিস্টাব্দে কী নামকরণ করে?', opts: ['নিউ জার্সি', 'নিউ হ্যাম্পশায়ার', 'নিউ ইয়র্ক', 'বোস্টন'], ans: 2, exp: 'ইংরেজরা ১৬৬৪ খ্রিস্টাব্দে ডাচদের কাছ থেকে নিউ আমস্টারডাম ছিনিয়ে নেয় এবং এর নতুন নাম দেয় নিউ ইয়র্ক।'},
+      {q: 'অষ্টাদশ শতকে দক্ষিণ আমেরিকা থেকে ইউরোপে বিপুল পরিমাণ সোনা ও রূপা আমদানির ফলে যে মুদ্রাস্ফীতি দেখা দেয়, তা কী নামে পরিচিত?', opts: ['শিল্পবিপ্লব', 'মূল্যবিপ্লব (Price Revolution)', 'ফরাসি বিপ্লব', 'শ্বেতাঙ্গ বিপ্লব'], ans: 1, exp: 'আমেরিকা থেকে বিপুল পরিমাণ সোনা-রূপা স্পেনের হাত ঘুরে ইউরোপে এলে মুদ্রাস্ফীতি ঘটে, যার ফলে দ্রব্যমূল্য অস্বাভাবিক বৃদ্ধি পায়, এটিই মূল্যবিপ্লব।'},
+      {q: 'দক্ষিণ আমেরিকার উপনিবেশগুলি থেকে সম্পদ ইউরোপে আসার ফলে যে নতুন শ্রেণির উদ্ভব ঘটে, তাদের কী বলা হয়?', opts: ['সামন্ত শ্রেণি', 'মজুর শ্রেণি', 'পুঁজিপতি বা ক্যাপিটালিস্ট শ্রেণি', 'অভিজাত শ্রেণি'], ans: 2, exp: 'বণিকদের হাতে বিপুল অর্থ জমা হলে তারা তা শিল্পে ও সরকারকে ধার দিতে শুরু করে, এভাবেই পুঁজিপতি শ্রেণির উদ্ভব ঘটে।'},
+      {q: 'সপ্তদশ শতকে বিশ্ব অর্থনীতির উদ্ভব প্রধানত কীসের ফলে ঘটেছিল?', opts: ['ইংল্যান্ডের শিল্পবিপ্লবের ফলে', 'এশিয়া, আফ্রিকা ও আমেরিকায় ইউরোপের বিভিন্ন উপনিবেশ গড়ে ওঠার ফলে', 'ফরাসি বিপ্লবের ফলে', 'ডাচদের সামুদ্রিক আধিপত্যের ফলে'], ans: 1, exp: 'উপনিবেশগুলিকে কেন্দ্র করে ইউরোপীয় অর্থনীতির ব্যাপক প্রসার ঘটে, যা বিশ্ব অর্থনীতি বা গ্লোবাল ইকোনমির জন্ম দেয়।'},
+      {q: 'ক্যারিবিয়ান দ্বীপপুঞ্জে তামাক, চিনি, নীল ও ক্রীতদাসের ব্যবসায় একচেটিয়া অধিকার কোন্ ইউরোপীয় শক্তি স্থাপন করেছিল?', opts: ['ফরাসিরা', 'ডাচরা', 'পোর্তুগিজরা', 'জার্মানরা'], ans: 1, exp: 'ডাচ ও ইংরেজরা ক্যারিবিয়ান অঞ্চলে স্পেনীয় শাসনের অবসান ঘটিয়ে আধিপত্য বিস্তার করে, তবে ডাচরা বাণিজ্যে একচেটিয়া অধিকার লাভ করে।'},
+      {q: 'ফরাসি বিপ্লবের (১৭৮৯ খ্রি.) প্রাক্কালে ফ্রান্স ও ইংল্যান্ডের অন্তত ৪০ শতাংশ বাণিজ্য কী কেন্দ্র করে চলত?', opts: ['এশিয়া মহাদেশ', 'তাদের নিজ নিজ উপনিবেশগুলিকে কেন্দ্র করে', 'স্বাধীন আমেরিকা', 'ইউরোপের অভ্যন্তরীণ বাজার'], ans: 1, exp: 'ঐতিহাসিক জর্জ রুডে-র মতে, এই দেশগুলোর বাণিজ্যের একটি বিশাল অংশ তাদের সমুদ্রপারের উপনিবেশগুলির ওপর নির্ভরশীল ছিল।'},
+      {q: 'পোর্তুগালের রাজা ষষ্ঠ জোয়াও ১৮০৮ খ্রিস্টাব্দে নেপোলিয়নের আক্রমণের ভয়ে পালিয়ে গিয়ে কোথা থেকে পোর্তুগাল শাসন করতেন?', opts: ['গোয়া থেকে', 'ম্যাকাও থেকে', 'ব্রাজিলের রিও-ডি-জেনিরো থেকে', 'কেপ ভার্দে থেকে'], ans: 2, exp: 'নেপোলিয়ন পোর্তুগাল আক্রমণ করলে রাজা ষষ্ঠ জোয়াও ব্রাজিলে পালিয়ে যান এবং সেখান থেকেই পোর্তুগাল শাসন করতে থাকেন।'}
+    ]
+  },
+  7: {
+    name: 'Set 7',
+    icon: '💰',
+    topic: 'অর্থনৈতিক সাম্রাজ্যবাদ এবং হবসন-লেনিন তত্ত্ব',
+    questions: [
+      {q: 'ব্রিটিশ অর্থনীতিবিদ অ্যাডাম স্মিথ ১৭৭৬ খ্রিস্টাব্দে প্রকাশিত তাঁর ওয়েলথ অব নেশনস (Wealth of Nations) গ্রন্থে কোন্ অর্থনৈতিক মতবাদের কথা প্রথম অবজ্ঞার সঙ্গে ব্যবহার করেন?', opts: ['পুঁজিবাদ', 'সমাজতন্ত্র', 'মার্কেন্টাইলবাদ (Mercantilism)', 'মিশ্র অর্থনীতি'], ans: 2, exp: 'অ্যাডাম স্মিথই প্রথম মার্কেন্টাইলবাদ শব্দটি ব্যবহার করেন, যা ষোড়শ-অষ্টাদশ শতকে ইউরোপের দেশগুলির সংরক্ষণশীল ঔপনিবেশিক বাণিজ্যের মূল ভিত্তি ছিল।'},
+      {q: 'কোন্ অর্থনৈতিক মতবাদ অনুসারে সোনা ও রূপার ভাণ্ডার বাড়ানোর ওপরেই জাতীয় সম্পদের বৃদ্ধি নির্ভর করে বলে মনে করা হত?', opts: ['মুক্ত বাণিজ্য নীতি', 'মার্কেন্টাইলবাদ', 'পুঁজিবাদ', 'ফিজিওক্রাটিক নীতি'], ans: 1, exp: 'মার্কেন্টাইল নীতি অনুযায়ী, একটি দেশের শক্তি ও সম্পদ বৃদ্ধি পায় তার সোনা ও রূপার ভাণ্ডার (Bullion) বৃদ্ধির মাধ্যমে।'},
+      {q: 'মার্কেন্টাইলবাদের অন্যতম বৈশিষ্ট্য ছিল সংরক্ষণ নীতি। এর একটি উল্লেখযোগ্য প্রয়োগ ছিল ইংল্যান্ডের কোন্ আইনে?', opts: ['চার্টার অ্যাক্ট', 'নেভিগেশন আইন (Navigation Act)', 'ইলবার্ট বিল', 'রেগুলেটিং অ্যাক্ট'], ans: 1, exp: 'মার্কেন্টাইলবাদের সংরক্ষণ নীতির একটি বড়ো উদাহরণ হলো ইংল্যান্ডের নেভিগেশন আইন।'},
+      {q: 'মার্কেন্টাইলবাদের সমালোচনা করে কোন্ অর্থনীতিবিদ অবাধ বাণিজ্য নীতির (Free Trade Policy) পক্ষে সওয়াল করেন?', opts: ['জে এ হবসন', 'কার্ল মার্কস', 'ডেভিড হিউম', 'অ্যাডাম স্মিথ'], ans: 3, exp: 'অ্যাডাম স্মিথ মনে করতেন যে অযথা সরকারি হস্তক্ষেপ বা সংরক্ষণের বদলে অবাধ বাণিজ্যের মাধ্যমেই দেশের অর্থনীতি মজবুত হতে পারে।'},
+      {q: 'সাম্রাজ্যবাদ ও উপনিবেশবাদের অর্থনৈতিক ব্যাখ্যাদাতাদের মধ্যে সর্বাধিক অগ্রগণ্য কে ছিলেন যাঁদের তত্ত্ব হবসন-লেনিন তত্ত্ব নামে পরিচিত?', opts: ['জে. এ. হবসন এবং ভি. আই. লেনিন', 'অ্যাডাম স্মিথ ও ডেভিড রিকার্ডো', 'কার্ল মার্কস ও ফ্রেডরিক এঙ্গেলস', 'চার্লস ডারউইন ও রুডইয়ার্ড কিপলিং'], ans: 0, exp: 'নয়া সাম্রাজ্যবাদ ও উপনিবেশবাদ প্রসারের পশ্চাতে অর্থনৈতিক কারণকে ব্যাখ্যা করে জে. এ. হবসন এবং ভি. আই. লেনিন যে তত্ত্ব দেন তা হবসন-লেনিন তত্ত্ব নামে পরিচিত।'},
+      {q: '১৯০২ খ্রিস্টাব্দে প্রকাশিত Imperialism: A Study (সাম্রাজ্যবাদ: একটি সমীক্ষা) গ্রন্থটির রচয়িতা কে?', opts: ['ভি আই লেনিন', 'জে এ হবসন', 'রুডলফ হিলফারডিং', 'নিকোলাই বুখারিন'], ans: 1, exp: 'ব্রিটিশ অর্থনীতিবিদ জে এ হবসন এই গ্রন্থে প্রমাণ করেন যে নয়া সাম্রাজ্যবাদের মূলে কোনো মহৎ উদ্দেশ্য ছিল না, ছিল উদ্বৃত্ত পুঁজি বিনিয়োগের তাগিদ।'},
+      {q: 'হবসনের মতে সাম্রাজ্যবাদের মূল শিকড় কী ছিল?', opts: ['ধর্মপ্রচার', 'সভ্যতার প্রসার', 'উদ্বৃত্ত পুঁজি বিনিয়োগের ক্ষেত্র অনুসন্ধান', 'সামরিক শক্তি বৃদ্ধি'], ans: 2, exp: 'ধনতান্ত্রিক সমাজে পুঁজিপতিদের হাতে যে বাড়তি মূলধনের চাপ সৃষ্টি হয়, তা বিনিয়োগ করে মুনাফা লোটার জন্যই তারা সরকারকে উপনিবেশ দখলে বাধ্য করে।'},
+      {q: '১৯১৬ খ্রিস্টাব্দে সাম্রাজ্যবাদ: পুঁজিবাদের সর্বোচ্চ স্তর (Imperialism: The Highest Stage of Capitalism) গ্রন্থটি কে রচনা করেন?', opts: ['ভি আই লেনিন', 'জে এ হবসন', 'কার্ল মার্কস', 'স্ট্যালিন'], ans: 0, exp: 'রুশ কমিউনিস্ট নেতা লেনিন এই গ্রন্থে সাম্রাজ্যবাদের অর্থনৈতিক দিকটি বিশদভাবে ব্যাখ্যা করেন।'},
+      {q: 'কোন্ রুশ তাত্ত্বিক সাম্রাজ্যবাদকে ক্ষয়িষ্ণু সাম্রাজ্যবাদ রূপে অভিহিত করে বলেছিলেন যে বিশ্ববিপ্লবের মাধ্যমে এর বিনাশ ঘটবে?', opts: ['ট্রটস্কি', 'স্ট্যালিন', 'লেনিন', 'বুখারিন'], ans: 2, exp: 'লেনিন সাম্রাজ্যবাদকে ক্ষয়িষ্ণু সাম্রাজ্যবাদ বলেছেন কারণ তাঁর মতে এটি পুঁজিবাদের চূড়ান্ত স্তর এবং এরপর সমাজতান্ত্রিক বিপ্লবের মাধ্যমে এর পতন ঘটবে।'},
+      {q: '১৯১০ খ্রিস্টাব্দে ফিনান্স ক্যাপিটাল (Finance Capital) গ্রন্থটি কে রচনা করেন?', opts: ['নিকোলাই বুখারিন', 'রুডলফ হিলফারডিং', 'জে এ হবসন', 'ভি আই লেনিন'], ans: 1, exp: 'জার্মানির সোশ্যাল ডেমোক্রেটিক পার্টির তাত্ত্বিক নেতা রুডলফ হিলফারডিং এই বিখ্যাত গ্রন্থটি রচনা করেন।'},
+      {q: 'লেনিন মনে করতেন যে পুঁজিপতিরা উপনিবেশগুলি থেকে মুনাফার একটি ক্ষুদ্র অংশ নিজ দেশের শ্রমিকদের দিয়ে একটি অনুগত শ্রেণি তৈরি করে। তিনি এই শ্রেণিকে কী নাম দিয়েছেন?', opts: ['বুর্জোয়া শ্রেণি', 'প্রলেতারিয়েত', 'অভিজাত শ্রমিকশ্রেণি', 'মধ্যবিত্ত শ্রেণি'], ans: 2, exp: 'লেনিনের মতে পুঁজিপতিরা এই অভিজাত শ্রমিকশ্রেণি তৈরি করে যাতে তারা বিপ্লবের কথা ভুলে গিয়ে পুঁজিপতিদেরই সমর্থন করে।'},
+      {q: '"পুঁজিবাদী অর্থনীতি হল যুদ্ধের জন্মদাতা।" —এই উক্তিটি কার?', opts: ['লেনিনের', 'কার্ল মার্কসের', 'হবসনের', 'অ্যাডাম স্মিথের'], ans: 0, exp: 'লেনিন মনে করতেন যে উপনিবেশ দখলের প্রতিযোগিতায় পুঁজিবাদী রাষ্ট্রগুলি একে অপরের সাথে যুদ্ধে লিপ্ত হয়।'},
+      {q: 'হাবসন-লেনিন তত্ত্বের সমালোচকরা দেখিয়েছেন যে, ১৯১৩ খ্রিস্টাব্দে ইংল্যান্ড, ফ্রান্স ও জার্মানির পুঁজির সিংহভাগ এশিয়া-আফ্রিকায় নয়, বরং কোথায় বিনিয়োগ হয়েছিল?', opts: ['উত্তর আমেরিকায়', 'ইউরোপেরই বিভিন্ন রাষ্ট্রে বা রাশিয়া ও দক্ষিণ আমেরিকায়', 'অস্ট্রেলিয়ায়', 'চিনে'], ans: 1, exp: 'এটি হবসন-লেনিন তত্ত্বের একটি প্রধান সমালোচনা যে, উদ্বৃত্ত পুঁজির বেশিরভাগটাই আসলে তাদের উপনিবেশ বহির্ভূত স্থানে বিনিয়োগ হয়েছিল।'},
+      {q: 'কোন্ জার্মান রাষ্ট্রপ্রধান বাঁচার মতো স্থান-এর তত্ত্ব প্রচার করে উপনিবেশ স্থাপনের নীতিকে বৈধতা দেওয়ার চেষ্টা করেন?', opts: ['বিসমার্ক', 'কাইজার দ্বিতীয় উইলিয়াম', 'হিটলার', 'ফ্রেডরিক উইলিয়াম'], ans: 2, exp: 'জনসংখ্যা বৃদ্ধির কারণে বাঁচার মতো স্থান (Lebensraum)-এর তত্ত্ব দিয়ে হিটলার তাঁর সাম্রাজ্যবাদী আগ্রাসনকে সমর্থন করেছিলেন।'},
+      {q: 'ইউরোপের বিভিন্ন সাম্রাজ্যবাদী জাতি অনুন্নত জাতিগুলিকে সভ্য করার যে স্বঘোষিত দায়িত্ব নিয়েছিল, ইংরেজ কবি রুডইয়ার্ড কিপলিং তাকে কী বলে অভিহিত করেছেন?', opts: ['ঐশ্বরিক অধিকার (Divine Right)', 'সাদা চামড়ার দায়বদ্ধতা বা শ্বেতাঙ্গদের বোঝা (White Man\'s Burden)', 'মুক্তদ্বার নীতি', 'যোগ্যতমের উদ্‌দ্বর্তন'], ans: 1, exp: 'রুডইয়ার্ড কিপলিং প্রচার করেন যে, ইউরোপের বাইরে শ্বেতাঙ্গ জাতি তাদের উন্নত সভ্যতা-সংস্কৃতির আশীর্বাদ নিয়ে উপস্থিত হয়েছে অ-ইউরোপীয়দের সভ্য করতে।'}
+    ]
+  },
+  8: {
+    name: 'Set 8',
+    icon: '⚔️',
+    topic: 'সাম্রাজ্যবাদ ও উপনিবেশবাদ প্রসারের কারণ',
+    questions: [
+      {q: '১৮৭০ খ্রিস্টাব্দের পর ইউরোপের বিভিন্ন দেশে কোন্ মানসিকতা মাথাচাড়া দিয়ে ওঠে, যা উপনিবেশ স্থাপনের প্রতিযোগিতাকে উসকে দেয়?', opts: ['ধর্মনিরপেক্ষতা', 'উগ্র জাতীয়তাবাদ', 'সাম্যবাদ', 'উদারনীতিবাদ'], ans: 1, exp: '১৮৭০ খ্রিস্টাব্দের পর ইউরোপের বিভিন্ন দেশে উগ্র জাতীয়তাবাদ মাথাচাড়া দিয়ে ওঠে এবং প্রতিটি জাতিই নিজেদের শ্রেষ্ঠত্ব প্রতিষ্ঠায় অত্যন্ত সক্রিয় হয়ে উপনিবেশ দখলের প্রতিযোগিতায় নামে।'},
+      {q: 'শিল্পবিপ্লবের পর ইউরোপের শিল্পোন্নত দেশগুলি কেন এশিয়া ও আফ্রিকার বাজার দখলের চেষ্টা চালায়?', opts: ['ধর্মপ্রচারের উদ্দেশ্যে', 'উদ্বৃত্ত পণ্যসামগ্রী বিক্রির জন্য', 'সমাজ সংস্কারের জন্য', 'দাস শ্রমিক আমদানির জন্য'], ans: 1, exp: 'শিল্পবিপ্লবের ফলে কলকারখানায় বিপুল পরিমাণ পণ্যসামগ্রী উৎপাদিত হতে থাকে। নিজ দেশের চাহিদা মেটানোর পর এই উদ্বৃত্ত পণ্য বিক্রির জন্যই তারা এশিয়া ও আফ্রিকার বাজার দখলের চেষ্টা চালায়।'},
+      {q: 'সাম্রাজ্যবাদের প্রসারে পণ্য বিক্রির বাজার দখল এবং কাঁচামাল সংগ্রহের বিষয়ের ওপর কারা সবচেয়ে বেশি গুরুত্ব আরোপ করেছেন?', opts: ['অ্যাডাম স্মিথ ও ডেভিড হিউম', 'হবসন এবং লেনিন', 'কার্ল মার্কস ও এঙ্গেলস', 'লর্ড অ্যাক্টন ও জেমস মিল'], ans: 1, exp: 'বিশিষ্ট ব্রিটিশ অর্থনীতিবিদ হবসন এবং রুশ কমিউনিস্ট নেতা লেনিন সাম্রাজ্যবাদের প্রসারে পণ্য বিক্রির বাজার দখল এবং সস্তায় কাঁচামাল সংগ্রহের বিষয়ের ওপর সর্বাধিক গুরুত্ব আরোপ করেছেন।'},
+      {q: 'লেনিনের মতে পুঁজিপতিরা বাজার দখলের চেয়ে কোন্ বিষয়ে বেশি আগ্রহী ছিল?', opts: ['ধর্মপ্রচারে', 'রাজনৈতিক সন্ধি স্থাপনে', 'উপনিবেশে পুঁজি বিনিয়োগে', 'সামরিক সাহায্য প্রদানে'], ans: 2, exp: 'লেনিন বলেন যে, পুঁজিপতিরা বাজার দখলের চেয়ে উপনিবেশে মূলধন বা পুঁজি বিনিয়োগেই বেশি আগ্রহী ছিল, কারণ সেখান থেকে আরও বেশি মুনাফা অর্জন করা সম্ভব ছিল।'},
+      {q: 'সাইপ্রাস ও কেপ-এর মতো নৌঘাঁটি ইংল্যান্ড কেন দখল করেছিল?', opts: ['বাণিজ্যিক সুবিধার জন্য', 'নিরাপত্তার উদ্দেশ্যে বা সামরিক কারণে', 'কৃষিকাজের জন্য', 'দাস ব্যবসার জন্য'], ans: 1, exp: 'ইউরোপে যুদ্ধের বাতাবরণ তৈরি হওয়ায় নিজ দেশের নিরাপত্তা সুনিশ্চিত করার উদ্দেশ্যে ইংল্যান্ড সাইপ্রাস ও কেপের মতো নৌঘাঁটি সামরিক কারণে দখল করেছিল।'},
+      {q: 'ইটালি নিজেদের জাতীয় মর্যাদা বৃদ্ধির উদ্দেশ্যে কোন্ স্থান দখল করে?', opts: ['মিশর', 'লিবিয়া', 'আলজেরিয়া', 'সুদান'], ans: 1, exp: 'ইউরোপের বিভিন্ন দেশ নিজেদের সামরিক শক্তি ও মর্যাদা তুলে ধরার জন্য উপনিবেশ বিস্তার করত। এরই অংশ হিসেবে ইটালি নিজেদের জাতীয় মর্যাদা বৃদ্ধির উদ্দেশ্যে লিবিয়া দখল করে।'},
+      {q: '"সাম্রাজ্যবাদের ফলে যুদ্ধ শুরু হয়, এ কথা অর্ধসত্য। আবার এ কথাও সত্য যে, যুদ্ধের ভীতি থেকেই সাম্রাজ্যবাদের উদ্ভব ঘটে।" —উক্তিটি কার?', opts: ['ডেভিড টমসন', 'জেমস জোল', 'লেনার্ড উলফ', 'হবসন'], ans: 0, exp: 'প্রখ্যাত ঐতিহাসিক ডেভিড টমসন আধুনিক সাম্রাজ্যবাদ প্রসারের সামরিক কারণটি ব্যাখ্যা করতে গিয়ে এই বিখ্যাত মন্তব্যটি করেছেন।'},
+      {q: 'ইউরোপের বিভিন্ন দেশ উপনিবেশগুলিতে তাদের বাড়তি লোকজনের কীসের ব্যবস্থা করার উদ্যোগ নেয়?', opts: ['ভ্রমণের', 'বাসস্থান ও কর্মসংস্থানের', 'ধর্মশিক্ষার', 'চিকিৎসার'], ans: 1, exp: 'উনবিংশ শতকের শেষদিকে ইউরোপে জনসংখ্যা বিপুলভাবে বৃদ্ধি পায়। এই বর্ধিত জনসংখ্যার বাসস্থান ও কর্মসংস্থানের ব্যবস্থা করার জন্যই ইউরোপীয়রা উপনিবেশ স্থাপনের উদ্যোগ নেয়।'},
+      {q: 'বাঁচার মতো স্থান (Lebensraum)-এর তত্ত্ব প্রচার করে কে উপনিবেশ স্থাপনের নীতিকে বৈধতা দেওয়ার চেষ্টা করেন?', opts: ['কাইজার দ্বিতীয় উইলিয়াম', 'মুসোলিনি', 'হিটলার', 'বিসমার্ক'], ans: 2, exp: 'জার্মান রাষ্ট্রপ্রধান হিটলার ক্রমবর্ধমান জনসংখ্যার জন্য বাঁচার মতো স্থান বা Lebensraum-এর তত্ত্ব প্রচার করে তাঁর সাম্রাজ্যবাদী আগ্রাসনকে সমর্থন করেছিলেন।'},
+      {q: '"অনুন্নত জাতিগুলিকে সভ্য করে তোলা উন্নত জাতিগুলির দায়িত্বের মধ্যে পড়ে" —এ কথা কে বলেছিলেন?', opts: ['রুডইয়ার্ড কিপলিং', 'জুলে ফেরি (Jules Ferry)', 'লর্ড ক্রোমার', 'লর্ড মেকলে'], ans: 1, exp: 'প্রখ্যাত ফরাসি লগ্নিকারক ও লেখক জুলে ফেরি সাম্রাজ্যবাদকে সমর্থন করে বলেছিলেন যে উন্নত জাতির এটা একটা কর্তব্য যে তারা পিছিয়ে পড়া জাতিকে সভ্য করে তুলবে।'},
+      {q: 'সাদা চামড়ার মানুষের দায়বদ্ধতা (White Man\'s Burden) তত্ত্বের কথা কে বলেছেন?', opts: ['রুডইয়ার্ড কিপলিং', 'চার্লস ডারউইন', 'ডেভিড লিভিংস্টোন', 'অ্যালফ্রেড টেনিসন'], ans: 0, exp: 'প্রখ্যাত ইংরেজ কবি রুডইয়ার্ড কিপলিং সাদা চামড়ার মানুষকে অনুন্নত জাতিগুলির উন্নতির দায়িত্ব নেওয়ার আহ্বান জানিয়ে এই তত্ত্ব প্রচার করেন।'},
+      {q: 'এশিয়া ও আফ্রিকায় ধর্মপ্রচারের ক্ষেত্রে ইংরেজ মিশনারিদের চেয়ে কোন্ দেশের মিশনারিদের সক্রিয়তা বেশি ছিল?', opts: ['ওলন্দাজ মিশনারিদের', 'পোর্তুগিজ মিশনারিদের', 'ফরাসি মিশনারিদের', 'জার্মান মিশনারিদের'], ans: 2, exp: 'ধর্মপ্রচারের ক্ষেত্রে ইংরেজ মিশনারিদের চেয়ে ফরাসি মিশনারিদের সক্রিয়তা বেশি ছিল, বিশেষত স্ট্যানলি এবং কার্ডিনাল লেভিজেরির নাম এ বিষয়ে উল্লেখযোগ্য।'},
+      {q: 'মানবকল্যাণের উদ্দেশ্যে সমাজসেবী চিকিৎসক হিসেবে কোন্ স্কট মিশনারি আফ্রিকায় আসেন?', opts: ['চার্লস গ্রান্ট', 'আলেকজান্ডার ডাফ', 'ডেভিড লিভিংস্টোন', 'স্ট্যানলি'], ans: 2, exp: 'লন্ডন মিশনারি সোসাইটির একজন সমাজসেবী চিকিৎসক হিসেবে বিখ্যাত স্কট মিশনারি ড. ডেভিড লিভিংস্টোন আফ্রিকায় এসে মানবকল্যাণে ব্রতী হন।'},
+      {q: 'উন্নত পরিবহণ ব্যবস্থা এবং যন্ত্রচালিত যান ইউরোপীয় অভিযাত্রীদের অভিযান স্পৃহা বাড়িয়ে দিয়েছিল —এ কথা কে বলেছেন?', opts: ['ফিলিপ কার্টিন', 'লিওনার্ড থম্পসন', 'ড্যানিয়েল হেনরিক', 'জেমস জোল'], ans: 1, exp: 'লিওনার্ড থম্পসন প্রযুক্তিগত কারণ ব্যাখ্যা করতে গিয়ে বলেছেন যে, উন্নত প্রযুক্তি ও পরিবহণ ব্যবস্থা ইউরোপীয়দের সাম্রাজ্যবাদী মানসিকতাকে প্রবলভাবে উসকে দিয়েছিল।'},
+      {q: 'পোর্তুগাল কবে এশিয়া মহাদেশের ম্যাকাও শহরটি চিনকে ছেড়ে দিলে ইউরোপের সর্বশেষ ঔপনিবেশিক শাসনের অবসান ঘটে?', opts: ['১৯৪৭ খ্রিস্টাব্দে', '১৯৪৫ খ্রিস্টাব্দে', '১৯৯৯ খ্রিস্টাব্দে', '১৯১৪ খ্রিস্টাব্দে'], ans: 2, exp: '১৯৯৯ খ্রিস্টাব্দে পোর্তুগাল এশিয়া মহাদেশের ম্যাকাও চিনকে ছেড়ে দিলে দীর্ঘ পাঁচ শতক ধরে চলতে থাকা ইউরোপীয় ঔপনিবেশিক যুগের সম্পূর্ণ অবসান ঘটে।'}
+    ]
+  },
+  9: {
+    name: 'Set 9',
+    icon: '👥',
+    topic: 'উপনিবেশে জাতিগত প্রশ্ন ও তার বিকাশ',
+    questions: [
+      {q: 'ব্রিটিশ ঔপনিবেশিক আমলে কোন্ ইংরেজ ঐতিহাসিক মনে করতেন যে অনুন্নত ভারতীয়দের স্বশাসন দানের কোনো প্রশ্নই ওঠে না?', opts: ['জেমস ফিটজেমস স্টিফেন', 'লর্ড মেকলে', 'জেমস মিল', 'টমাস কার্লাইল'], ans: 2, exp: 'জেমস মিল তাঁর হিস্ট্রি অব ব্রিটিশ ইন্ডিয়া গ্রন্থে প্রাচ্যের সভ্যতাকে নিকৃষ্ট বলে মনে করতেন এবং তিনি বিশ্বাস করতেন যে ভারতে ব্রিটিশ শাসন অনন্তকাল টিকে থাকবে।'},
+      {q: '"ইউরোপের ভালো কোনো গ্রন্থাগারের একটি তাক সমগ্র ভারত ও আরব সাহিত্যের সমকক্ষ" —এই উদ্ধত উক্তিটি কার?', opts: ['লর্ড কর্নওয়ালিস', 'জেমস মিল', 'লর্ড মেকলে', 'লর্ড ডালহৌসি'], ans: 2, exp: 'ভারতের বড়োলাট উইলিয়াম বেন্টিকের আইন-সচিব লর্ড মেকলে ভারতীয় শিক্ষাব্যবস্থা ও সাহিত্যকে পাশ্চাত্যের তুলনায় নিকৃষ্ট প্রমাণ করতে গিয়ে এই উক্তিটি করেছিলেন।'},
+      {q: 'ভারতে ব্রিটিশ শাসনের নৈতিক ভিত্তিরূপে ব্রিটিশদের জাতিগত উৎকর্ষের কথা কে বলেছিলেন?', opts: ['চার্লস ডারউইন', 'জেমস ফিটজেমস স্টিফেন', 'অ্যান্সমিড বার্টলে', 'অ্যালফ্রেড টেনিসন'], ans: 1, exp: 'ভারত সরকারের আইনি পরামর্শদাতা জেমস ফিটজেমস স্টিফেন ভারতে ব্রিটিশ শাসনের যৌক্তিকতা প্রমাণ করতে গিয়ে ব্রিটিশদের জাতিগত শ্রেষ্ঠত্বের কথা বলেছিলেন।'},
+      {q: 'যোগ্যতমের উদ্বর্তন (Survival of the fittest) তত্ত্বটি কে প্রচার করেন?', opts: ['চার্লস ডারউইন', 'ল্যামার্ক', 'রুডইয়ার্ড কিপলিং', 'অ্যালবার্ট আইনস্টাইন'], ans: 0, exp: 'বিশিষ্ট ব্রিটিশ জীববিজ্ঞানী চার্লস ডারউইন তাঁর বিখ্যাত তত্ত্বে বলেছিলেন যে, প্রতিকূল পরিস্থিতিতে লড়াই করে শুধু যোগ্যতম প্রাণীরাই নিজেদের অস্তিত্ব টিকিয়ে রাখতে পারে।'},
+      {q: 'ডারউইনের তত্ত্বকে সামাজিক ক্ষেত্রে প্রয়োগ করে সাম্রাজ্যবাদী জাতিগুলি কী তত্ত্ব প্রচার করে?', opts: ['শ্বেতাঙ্গদের দায়বদ্ধতা', 'যোগ্যতম জাতির শ্রেষ্ঠত্ব রক্ষা', 'মুক্তদ্বার নীতি', 'অদৃশ্য সাম্রাজ্যবাদ'], ans: 1, exp: 'ইউরোপের সাম্রাজ্যবাদী জাতিগুলি ডারউইনের তত্ত্বকে নিজেদের মতো ব্যাখ্যা করে প্রচার করে যে, সংঘাতের মধ্যে সবচেয়ে শক্তিশালী বা যোগ্যতম জাতিই পৃথিবীতে টিকে থাকবে।'},
+      {q: 'কোন্ তত্ত্বটি হিটলারের নাৎসিবাদের অন্যতম হাতিয়ার হয়ে উঠেছিল?', opts: ['মার্কেন্টাইলবাদ', 'শ্বেতাঙ্গ দায়বদ্ধতা', 'বিশুদ্ধ রক্ত ও মিশ্রিত রক্তের তত্ত্ব (হেরেনভক তত্ত্ব)', 'যোগ্যতমের উদ্বর্তন'], ans: 2, exp: 'হিটলার তাঁর উগ্র জাতীয়তাবাদী হেরেনভক তত্ত্বের মাধ্যমে জার্মান তরুণদের মধ্যে বিশুদ্ধ রক্তের সম্পর্ক ও শ্রেষ্ঠ জাতিতত্ত্বের কথা তুলে ধরেন।'},
+      {q: 'হিটলার তাঁর মেইন ক্যাম্প গ্রন্থে কোন্ জাতিকে প্রকৃত আর্য জাতির বংশধর বলে দাবি করেছেন?', opts: ['ফরাসি জাতিকে', 'ব্রিটিশ জাতিকে', 'জার্মান জাতিকে', 'ইতালীয় জাতিকে'], ans: 2, exp: 'হিটলার দাবি করেন যে জার্মান জাতিই হলো প্রকৃত আর্য জাতির বংশধর।'},
+      {q: '"ব্রিটিশ সাম্রাজ্যে সূর্য কখনও অস্তমিত হয় না" —এই উক্তিটির মূল উদ্দেশ্য কী ছিল?', opts: ['ব্রিটিশ নৌবাহিনীর প্রশংসা করা', 'ব্রিটিশদের জাতিগত গর্ব ও শ্রেষ্ঠত্ব প্রকাশ করা', 'ভৌগোলিক অবস্থান বর্ণনা করা', 'বাণিজ্যের প্রসার ঘটানো'], ans: 1, exp: 'ব্রিটিশ সাম্রাজ্যবাদীরা নিজেদের জাতিগত শ্রেষ্ঠত্ব ও বিশ্বব্যাপী বিশাল সাম্রাজ্যের অহংকার প্রকাশ করার জন্যই এই উক্তিটি সগর্বে প্রচার করত।'},
+      {q: 'ভারতের ব্রিটিশ গভর্নর-জেনারেল লর্ড কর্নওয়ালিস ভারতীয়দের কী বলে মনে করতেন?', opts: ['সৎ ও পরিশ্রমী', 'দুর্নীতিগ্রস্ত', 'অশিক্ষিত', 'সাহসী'], ans: 1, exp: 'লর্ড মেকলের মতো লর্ড কর্নওয়ালিসও ভারতীয়দের অত্যন্ত নীচু নজরে দেখতেন এবং তিনি ভারতীয়দের দুর্নীতিগ্রস্ত বলে মনে করতেন।'},
+      {q: 'উনবিংশ শতকের শেষ পর্বে ইউরোপের বিভিন্ন রাষ্ট্রে যে অন্ধ দেশপ্রেম ও সংকীর্ণ আত্মগৌরবের প্রচার শুরু হয়, তাকে কী বলা হয়?', opts: ['ধর্মনিরপেক্ষতাবাদ', 'আন্তর্জাতিকতাবাদ', 'বিকৃত বা উগ্র জাতীয়তাবাদ', 'মানবতাবাদ'], ans: 2, exp: 'এই সময় ইউরোপের সাম্রাজ্যবাদী রাষ্ট্রগুলি নিজেদের দেশ ও জাতিকে শ্রেষ্ঠতম বলে মনে করে এশিয়া ও আফ্রিকার অনগ্রসর জাতিগুলিকে পদানত করার উদ্যোগ নেয়, যা উগ্র জাতীয়তাবাদ নামে পরিচিত।'},
+      {q: 'জার্মান ঐতিহাসিক হেনরিখ ফন ট্রিটস্কি ও বার্নহার্ডি জার্মানির কোন্ জাতিকে পৃথিবীর শ্রেষ্ঠ জাতি বলে প্রচার করেন?', opts: ['নর্ডিক জাতি', 'অ্যাংলো-স্যাক্সন জাতি', 'টিউটনিক জাতি', 'কেল্টিক জাতি'], ans: 2, exp: 'বিকৃত জাতীয়তাবাদের প্রসারের যুগে এই জার্মান ঐতিহাসিকরা প্রচার করেন যে জার্মানির টিউটনিক জাতিই হলো পৃথিবীর শ্রেষ্ঠ জাতি।'},
+      {q: 'ইংরেজ লেখক হোমার লি কোন্ জাতির শ্রেষ্ঠত্ব প্রচার করেন?', opts: ['কেল্টিক জাতির', 'অ্যাংলো-স্যাক্সন জাতির', 'টিউটনিক জাতির', 'স্লাভ জাতির'], ans: 1, exp: 'উগ্র জাতীয়তাবাদের বশবর্তী হয়ে ইংরেজ লেখক হোমার লি অ্যাংলো-স্যাক্সন জাতির শ্রেষ্ঠত্ব প্রচার করে ব্রিটিশ সাম্রাজ্যবাদকে সমর্থন করেন।'},
+      {q: 'যখন মুষ্টিমেয় পুঁজিপতিরা নিজেদের লক্ষ্য ও স্বার্থকে জাতীয় লক্ষ্য ও স্বার্থের সমার্থক বলে প্রচার করে, তখন তাকে কী জাতীয়তাবাদ বলে?', opts: ['উদার জাতীয়তাবাদ', 'সংকীর্ণ জাতীয়তাবাদ', 'আন্তর্জাতিক জাতীয়তাবাদ', 'মিশ্র জাতীয়তাবাদ'], ans: 1, exp: 'ইউরোপের পুঁজিপতিরা সুপরিকল্পিতভাবে সাধারণ মানুষের মধ্যে অন্ধ দেশপ্রেম প্রচার করে নিজেদের ব্যবসায়িক স্বার্থকে দেশের স্বার্থ বলে চালাত, যা সংকীর্ণ জাতীয়তাবাদ নামে পরিচিত।'},
+      {q: 'উপনিবেশের শাসিত জাতি উচ্চহারে কর প্রদান করে কাদের জীবনে বাড়তি স্বাচ্ছন্দ্য এনে দিতে বাধ্য হত?', opts: ['স্থানীয় জমিদারদের', 'শাসক শ্বেতাঙ্গ জাতির', 'মিশনারিদের', 'অন্য উপনিবেশের'], ans: 1, exp: 'শাসিত জাতিগুলি উচ্চহারে কর প্রদান করে এবং কায়িক পরিশ্রম করে শাসক শ্বেতাঙ্গ জাতির জীবনে বাড়তি স্বাচ্ছন্দ্য ও বিলাসবহুল জীবন এনে দিতে বাধ্য থাকত।'},
+      {q: 'উপনিবেশে জাতিগত শোষণের একটি প্রধান নেতিবাচক বৈশিষ্ট্য কী ছিল?', opts: ['উপনিবেশে শিল্পায়ন ঘটানো', 'স্থানীয় মানুষদের সমানাধিকার দেওয়া', 'শাসিত জাতিকে নিজেদের খাদ্য উৎপাদন বন্ধ রেখে ইউরোপের শিল্পের কাঁচামাল উৎপাদনে বাধ্য করা', 'স্থানীয় রাজাদের ক্ষমতা ফিরিয়ে দেওয়া'], ans: 2, exp: 'জাতিগত শোষণের ফলে উপনিবেশের মানুষদের জোর করে অর্থকরী ফসল বা কাঁচামাল চাষে বাধ্য করা হতো, যা তাদের খাদ্যাভাব ও চরম দুর্দশার দিকে ঠেলে দিত।'}
+    ]
+  },
+  10: {
+    name: 'Set 10',
+    icon: '⚖️',
+    topic: 'জাতিগত ব্যবধানের প্রভাব (নঞর্থক ও সদর্থক)',
+    questions: [
+      {q: 'দক্ষিণ আফ্রিকার উপনিবেশে রেলগাড়িতে ওঠার অপরাধে শ্বেতাঙ্গ যাত্রীরা কাকে ট্রেন থেকে ঠেলে ফেলে দেয়?', opts: ['নেলসন ম্যান্ডেলাকে', 'গান্ধিজিকে', 'জওহরলাল নেহরুকে', 'ডেভিড লিভিংস্টোনকে'], ans: 1, exp: 'শ্বেতাঙ্গদের অমানবিকতা ও চরম জাতিবিদ্বেষের শিকার হয়ে একদা গান্ধিজি দক্ষিণ আফ্রিকায় ট্রেনের প্রথম শ্রেণির কামরা থেকে বিতাড়িত ও লাঞ্ছিত হয়েছিলেন।'},
+      {q: 'ভারতের মতো উপনিবেশে শ্বেতাঙ্গদের আঘাতে মূলত কোন্ প্রাচীন শিক্ষার অস্তিত্ব লুপ্ত হতে শুরু করে?', opts: ['আধুনিক বিজ্ঞান শিক্ষা', 'কেবল ডাক্তারি শিক্ষা', 'প্রাচীন আরবি, ফারসি ও সংস্কৃত শিক্ষা', 'ইংরেজি শিক্ষা'], ans: 2, exp: 'নিজেদের সাংস্কৃতিক ঐতিহ্যে গর্বিত শ্বেতাঙ্গ জাতি এশিয়া ও আফ্রিকার প্রাচীন ঐতিহ্যে জোর আঘাত হানে, যার ফলে প্রাচীন আরবি, ফারসি ও সংস্কৃত শিক্ষার মতো দেশীয় ঐতিহ্য লুপ্ত হতে থাকে।'},
+      {q: 'আফ্রিকার মরিশাস, জামাইকা, নাটাল প্রভৃতি উপনিবেশে ভারত ও চিন থেকে কাদের পাঠানো হত?', opts: ['উচ্চপদস্থ আমলাদের', 'মিশনারিদের', 'চুক্তিবদ্ধ শ্রমিকদের (Indentured labourers)', 'স্বাধীন ব্যবসায়ীদের'], ans: 2, exp: 'ক্রীতদাস প্রথা রদ হওয়ার পর আফ্রিকায় খামার ও অন্যান্য শ্রমসাধ্য কাজ সচল রাখার জন্য ভারত ও চিন থেকে হাজার হাজার কৃষ্ণাঙ্গ মানুষকে চুক্তিবদ্ধ শ্রমিক হিসেবে সেখানে পাঠানো হতো।'},
+      {q: 'ব্রিটিশ ভারতের বিচার বিভাগে বর্ণবৈষম্য দূর করার জন্য লর্ড রিপনের আমলে কোন্ বিল আনা হয়?', opts: ['রাওলাট বিল', 'ইলবার্ট বিল', 'পিটের বিল', 'চার্টার বিল'], ans: 1, exp: '১৮৮৩ খ্রিস্টাব্দে লর্ড রিপনের আইন সচিব সি. পি. ইলবার্ট বিচার বিভাগে ভারতীয় ও ইউরোপীয় বিচারকদের মধ্যে বর্ণবৈষম্য দূর করতে এই খসড়া বিল প্রকাশ করেন।'},
+      {q: 'ইলবার্ট বিলে কী দাবি করা হয়েছিল?', opts: ['ভারতীয়দের ভোটাধিকার', 'ভারতীয়দের কর মকুব', 'কৃষ্ণাঙ্গ ভারতীয় বিচারকরা শ্বেতাঙ্গ আসামির বিচার করতে পারবে', 'শ্বেতাঙ্গরা ভারতের জমি কিনতে পারবে না'], ans: 2, exp: 'এর আগে ভারতীয় বিচারকরা ইউরোপীয়দের বিচার করতে পারতেন না। ইলবার্ট বিলে ভারতীয় বিচারকদের শ্বেতাঙ্গ আসামির বিচারের অধিকার দেওয়ার কথা বলা হয়।'},
+      {q: 'ইলবার্ট বিলের বিরুদ্ধে কারা তীব্র আন্দোলন গড়ে তোলে?', opts: ['ভারতের কৃষকরা', 'ভারত সভার সদস্যরা', 'শ্বেতাঙ্গ তথা ইউরোপীয় বিচারক ও ব্যারিস্টারগণ', 'ভারতীয় জমিদাররা'], ans: 2, exp: 'ব্যারিস্টার ব্রানসন, মিলার প্রমুখ শ্বেতাঙ্গরা মনে করতেন যে ভারতীয়রা যোগ্য হলেও শ্বেতাঙ্গদের বিচার করার অধিকারী হতে পারে না, তাই তাঁরা এর বিরুদ্ধে তীব্র আন্দোলন করেন।'},
+      {q: 'লর্ড রিপন তীব্র প্রতিবাদের মুখে সংশোধিত ইলবার্ট বিলে কী শর্ত যোগ করতে বাধ্য হন?', opts: ['বিলটি সম্পূর্ণ বাতিল করা হয়', 'শ্বেতাঙ্গ আসামির বিচারের সময় অর্ধেক শ্বেতাঙ্গ জুরির মতামত নেওয়া বাধ্যতামূলক করা হয়', 'কেবল কলকাতা হাইকোর্টে এটি মানা হবে', 'ভারতীয়দের মৃত্যুদণ্ড দেওয়ার ক্ষমতা কেড়ে নেওয়া হয়'], ans: 1, exp: 'প্রবল বর্ণবিদ্বেষী আন্দোলনের চাপে রিপন পিছু হটেন এবং সংশোধিত বিলে নিয়ম করা হয় যে ভারতীয় বিচারক বিচার করলেও শ্বেতাঙ্গ জুরির মতামত নিতে হবে।'},
+      {q: 'ইউরোপের সভ্য জাতিগুলি এশিয়া ও আফ্রিকার মানুষদের মধ্যে আধুনিক গণতান্ত্রিক আদর্শ প্রচারের ফলে যে নবজাগরণ হয়, তাকে অনেকে কী বলেছেন?', opts: ['রেনেসাঁস', 'ঔপনিবেশিক আধুনিকীকরণ (Colonial modernisation)', 'শিল্পবিপ্লব', 'ফরাসি বিপ্লব'], ans: 1, exp: 'পাশ্চাত্য শিক্ষার ফলে উপনিবেশের মানুষদের মধ্যে সাম্য, মৈত্রী ও স্বাধীনতার আদর্শ প্রবেশ করে, যা ঔপনিবেশিক আধুনিকীকরণ নামে পরিচিত।'},
+      {q: 'কোন্ ফরাসি চিত্রশিল্পী ফরাসি উপনিবেশ তাহিতি-তে বসবাস শুরু করেন এবং তাঁর চিত্রে এর প্রভাব পড়ে?', opts: ['পাবলো পিকাসো', 'পল গগ্যা', 'লিওনার্দো দা ভিঞ্চি', 'ভ্যান গগ'], ans: 1, exp: 'ফরাসি চিত্রশিল্পী পল গগ্যা (১৮৪৮-১৯০৩ খ্রি.) দক্ষিণ সমুদ্রের সৌন্দর্যে মুগ্ধ হয়ে তাহিতিতে বসবাস শুরু করেন, যা তাঁর চিত্রকলাকে দারুণভাবে প্রভাবিত করেছিল।'},
+      {q: 'স্পেনের বিখ্যাত চিত্রশিল্পী পাবলো পিকাসো কোন্ মহাদেশের চিত্রশিল্পের দ্বারা প্রভাবিত হয়েছিলেন?', opts: ['এশিয়া', 'আফ্রিকা', 'অস্ট্রেলিয়া', 'দক্ষিণ আমেরিকা'], ans: 1, exp: 'পাবলো পিকাসো (১৮৮১-১৯৭৩ খ্রি.) আফ্রিকার চিত্রশিল্পের দ্বারা গভীরভাবে প্রভাবিত হয়েই তাঁর কিছু বিখ্যাত ও অনন্য চিত্রগুলি সৃষ্টি করেন।'},
+      {q: 'প্যারিস ইন্টারন্যাশনাল এগজিবিশনে (১৮৮৯ খ্রি.) প্রাচ্যের সংগীত শোনার পর কোন্ বিখ্যাত পাশ্চাত্য সুরকার প্রাচ্যের সংগীতে অনুরাগী হন?', opts: ['মোজার্ট', 'বেটোফেন', 'ক্লদ দুবুসি', 'জেমস জোল'], ans: 2, exp: 'পাশ্চাত্য সুরকার ক্লদ দুবুসি প্রাচ্যের সংগীতে এতটাই মুগ্ধ হন যে তিনি তাঁর পাশ্চাত্য সংগীতেও প্রাচ্যের সুরারোপ করতে শুরু করেন।'},
+      {q: 'নতুন উপনিবেশের মানুষদের সংস্পর্শে এসে মানবজাতি ও সমাজ সম্পর্কে ইউরোপীয়দের পঠনপাঠনের ফলে কোন্ বিজ্ঞানের আত্মপ্রকাশ ঘটে?', opts: ['মনোবিজ্ঞান (Psychology)', 'নৃবিজ্ঞান (Anthropology)', 'ভূতত্ত্ববিদ্যা (Geology)', 'প্রত্নতত্ত্ববিদ্যা (Archaeology)'], ans: 1, exp: 'পৃথিবীর বিভিন্ন স্থানে বসবাসকারী মানবজাতিগুলি সম্পর্কে ইউরোপীয়দের গবেষণা ও চর্চার ফলেই জীববিদ্যার অন্যতম শাখা রূপে নৃবিজ্ঞানের আত্মপ্রকাশ ঘটে।'},
+      {q: '"ইউরোপের সভ্য জাতিগুলি নিজেদের অনিচ্ছা সত্ত্বেও এশিয়া ও আফ্রিকার মানুষদের সাম্য, মৈত্রী ও গণতন্ত্রের মহান আদর্শে দীক্ষিত করেছিল" —কথাটি কে বলেছেন?', opts: ['লর্ড মেকলে', 'লেনার্ড উলফ', 'ডেভিড টমসন', 'কার্ল মার্কস'], ans: 1, exp: 'ব্রিটিশ চিন্তাবিদ লেনার্ড উলফ মনে করেন যে, শোষণের পাশাপাশি পাশ্চাত্যের সংস্পর্শে আসার ফলে উপনিবেশের মানুষরা নিজেদের অধিকার ও গণতন্ত্র সম্পর্কে সচেতন হয়ে উঠেছিল।'},
+      {q: 'জার্মানরা কোন্ স্থানে উপনিবেশের বিদ্রোহীদের দমনে নৃশংস বর্বর পদ্ধতি নিয়েছিল?', opts: ['ভারতে', 'দক্ষিণ-পশ্চিম আফ্রিকায়', 'ইন্দোচিনে', 'দক্ষিণ আমেরিকায়'], ans: 1, exp: 'মুক্তি আন্দোলন দমন করতে গিয়ে জার্মানরা দক্ষিণ-পশ্চিম আফ্রিকায় এবং ইংরেজরা দক্ষিণ আফ্রিকায় চরম নিষ্ঠুরতা চালিয়েছিল।'},
+      {q: 'ঔপনিবেশিক শাসনের পরোক্ষ ফলস্বরূপ উপনিবেশগুলিতে আধুনিক চিন্তাধারার জাগরণ ঘটলে কিসের জন্ম হয়?', opts: ['দাস প্রথার', 'স্বৈরতন্ত্রের', 'জাতীয়তাবাদের ও মুক্তি আন্দোলনের', 'সামন্ততন্ত্রের'], ans: 2, exp: 'পাশ্চাত্যের ভাষা ও শিক্ষার সংস্পর্শে এসে উপনিবেশের অধিবাসীরা তাদের অধিকার সম্পর্কে সচেতন হয় এবং পরাধীনতার শৃঙ্খল মোচন করতে জাতীয়তাবাদী মুক্তি আন্দোলন গড়ে তোলে।'}
+    ]
+  },
+  11: {
+    name: 'Set 11',
+    icon: '📝',
+    topic: 'অনুশীলনী ও বিবিধ (প্রথম ভাগ)',
+    questions: [
+      {q: 'ইম্পেরিয়াম (Imperium) শব্দটি একটি—', opts: ['সংস্কৃত শব্দ', 'লাতিন শব্দ', 'ইংরেজি শব্দ', 'গ্রিক শব্দ'], ans: 1, exp: 'লাতিন শব্দ ইম্পেরিয়াম থেকেই ইম্পেরিয়ালিজম বা সাম্রাজ্যবাদ কথাটির উদ্ভব হয়েছে।'},
+      {q: 'ইম্পিরিয়ালিজম্ (Imperialism) শব্দটি উদ্ভব হয়েছে—', opts: ['এম্পায়ার শব্দ থেকে', 'ইম্পিরিয়াল শব্দ থেকে', 'ইম্পেরিয়াম শব্দ থেকে', 'ভ্যামাপায়ার শব্দ থেকে'], ans: 2, exp: 'প্রথমদিকে এই শব্দের মাধ্যমে সামরিক কর্তৃত্বকে বোঝানো হলেও, পরে বৃহৎ রাষ্ট্রের ক্ষুদ্র রাষ্ট্রের ওপর শাসনকে বোঝানো শুরু হয়।'},
+      {q: '১৮৭০-১৯১৪ খ্রিস্টাব্দের কালপর্বের সম্প্রসারণবাদকে নয়া সাম্রাজ্যবাদ (New Imperialism) কথাটি কে ব্যবহার করে ব্যাখ্যা করেছেন?', opts: ['অ্যাডাম স্মিথ', 'ভিনসেন্ট স্মিথ', 'ডেভিড থমসন', 'অমিয় বাগচি'], ans: 2, exp: 'ডেভিড থমসন এই যুগের সাম্রাজ্যবাদ প্রসারে অর্থনৈতিক তাগিদের কথা বলেছেন এবং এই পর্বকে নয়া সাম্রাজ্যবাদ হিসেবে আখ্যায়িত করেছেন।'},
+      {q: '"ঔপনিবেশিকতা হল জাতীয় জনসমাজের প্রাকৃতিক ধারা... নিজেদের সভ্যতাকে প্রতিষ্ঠিত ও প্রসারিত করার ক্ষমতাই হল ঔপনিবেশিকতার অস্তিত্বের প্রমাণ।" —উক্তিটি কার?', opts: ['কার্ল মার্কস', 'ভি আই লেনিন', 'জে এ হবসন', 'এমারসন'], ans: 2, exp: 'প্রখ্যাত ব্রিটিশ অর্থনীতিবিদ জে এ হবসন তাঁর গ্রন্থে উপনিবেশবাদের এই সংজ্ঞা প্রদান করেছেন।'},
+      {q: 'অন্ধকারাচ্ছন্ন মহাদেশ বলা হত কোন্ মহাদেশকে?', opts: ['আফ্রিকা মহাদেশকে', 'এশিয়া মহাদেশকে', 'আমেরিকা মহাদেশকে', 'ইউরোপ মহাদেশকে'], ans: 0, exp: '১৮৭০ খ্রিস্টাব্দের আগে পর্যন্ত আফ্রিকা মহাদেশের বেশিরভাগ অংশ ইউরোপীয়দের কাছে অজ্ঞাত ছিল বলে একে অন্ধকারাচ্ছন্ন মহাদেশ বলা হত।'},
+      {q: 'White men\'s burden বা শ্বেতাঙ্গদের দায়বদ্ধতা তত্ত্বের প্রবক্তা হলেন—', opts: ['আর্নল্ড টয়েনবি', 'রুডইয়ার্ড কিপলিং', 'ভিনসেন্ট স্মিথ', 'চার্লস ডারউইন'], ans: 1, exp: 'ইংরেজ কবি রুডইয়ার্ড কিপলিং শ্বেতাঙ্গদের অনুন্নত জাতিগুলির উন্নতির দায়িত্ব নেওয়ার আহ্বান জানিয়ে এই কুখ্যাত উক্তিটি করেছিলেন।'},
+      {q: 'ফরাসি ইস্ট ইন্ডিয়া কোম্পানির প্রতিষ্ঠাতা ছিলেন—', opts: ['জাঁ ফিলিওজা', 'জাঁ ব্যাপটিস্ট কোলবার্ট', 'জোসেফ ডুপ্লে', 'নেপোলিয়ন বোনাপার্ট'], ans: 1, exp: '১৬৬৪ খ্রিস্টাব্দ নাগাদ ফরাসি মন্ত্রী জাঁ ব্যাপটিস্ট কোলবার্টের (Jean-Baptiste Colbert) নেতৃত্বে ফরাসি ইস্ট ইন্ডিয়া কোম্পানি প্রতিষ্ঠিত হয়।'},
+      {q: 'ইংরেজ ইস্ট ইন্ডিয়া কোম্পানি কবে প্রতিষ্ঠিত হয়?', opts: ['১৫০০ খ্রিস্টাব্দে', '১৬০০ খ্রিস্টাব্দে', '১৭০০ খ্রিস্টাব্দে', '১৮০০ খ্রিস্টাব্দে'], ans: 1, exp: '১৬০০ খ্রিস্টাব্দের ৩১ ডিসেম্বর রানি এলিজাবেথের অনুমতিক্রমে ইংল্যান্ডে এই কোম্পানি প্রতিষ্ঠিত হয়।'},
+      {q: 'প্রথম ইঙ্গ-ব্রহ্ম যুদ্ধের পর ইয়ান্দাবুর সন্ধি কবে স্বাক্ষরিত হয়?', opts: ['১৮২৬ খ্রিস্টাব্দে', '১৮২৭ খ্রিস্টাব্দে', '১৮২৮ খ্রিস্টাব্দে', '১৮২৯ খ্রিস্টাব্দে'], ans: 0, exp: '১৮২৪-২৬ খ্রিস্টাব্দ পর্যন্ত চলা প্রথম ইঙ্গ-ব্রহ্ম যুদ্ধে ব্রহ্মরাজ পরাজিত হয়ে ১৮২৬ খ্রিস্টাব্দে ইংরেজদের সাথে ইয়ান্দাবুর সন্ধি স্বাক্ষরে বাধ্য হন।'},
+      {q: 'উনবিংশ শতকের শেষদিকে সুদানে কে নিজেকে মাহদি বা ত্রাণকর্তারূপে পরিচিত করেছিলেন?', opts: ['মহম্মদ আমেদ', 'মহম্মদ ইবন', 'মহম্মদ রেজা', 'মহম্মদ আবদুল'], ans: 0, exp: 'সুদানে ব্রিটিশ আধিপত্যের বিরুদ্ধে মহম্মদ আমেদ নিজেকে মাহদি ঘোষণা করে শ্বেতাঙ্গ বিরোধী আন্দোলনের মাধ্যমে খার্তুম দখল করে নেন।'},
+      {q: 'নতুন বিশ্ব (New World) কথাটি প্রথম ব্যবহার করেন—', opts: ['পেড্রো আলভারেজ', 'আমেরিগো ভেসপুচি', 'কলম্বাস', 'সেবাস্টিয়ান ক্যাবট'], ans: 1, exp: 'ইতালীয় নাবিক আমেরিগো ভেসপুচি ১৫০৩ খ্রিস্টাব্দে লরেঞ্জো দা মেডিচিকে লেখা এক চিঠিতে এই আবিষ্কৃত মহাদেশটিকে Mundus Novus বা New World বলে উল্লেখ করেন।'},
+      {q: 'দ্বিতীয় ইঙ্গ-চিন বা দ্বিতীয় আফিম যুদ্ধের পর তিয়েনসিন-এর সন্ধি কবে স্বাক্ষরিত হয়?', opts: ['১৮৫৭ খ্রিস্টাব্দে', '১৮৫৯ খ্রিস্টাব্দে', '১৮৬০ খ্রিস্টাব্দে', '১৮৫৮ খ্রিস্টাব্দে'], ans: 3, exp: 'ইংল্যান্ড ও ফ্রান্সের কাছে পরাজিত হয়ে চিন ১৮৫৮ খ্রিস্টাব্দে তিয়েনসিন-এর সন্ধি স্বাক্ষর করে।'},
+      {q: 'উন্মুক্তদ্বার নীতির (Open door policy) প্রবক্তা ছিলেন—', opts: ['জন কে', 'জন হে', 'স্টুয়ার্ট পিগট', 'সেন্ট থমাস'], ans: 1, exp: 'চিনে ইউরোপীয়দের একচেটিয়া প্রভাব খর্ব করতে এবং আমেরিকার বাণিজ্যের স্বার্থে ১৮৯৯ খ্রিস্টাব্দে মার্কিন পররাষ্ট্র-সচিব স্যার জন হে এই নীতি ঘোষণা করেন।'},
+      {q: 'সর্বপ্রথম আমেরিকা মহাদেশে পদার্পণ করেন কে?', opts: ['কলম্বাস', 'আমেরিগো ভেসপুচি', 'জন ক্যাবট', 'ভাস্কো-দা-গামা'], ans: 0, exp: '১৪৯২ খ্রিস্টাব্দে ভারতের জলপথ খুঁজতে গিয়ে কলম্বাস আমেরিকা মহাদেশে পদার্পণ করেন।'},
+      {q: 'চিনে বক্সার বিদ্রোহ কবে সংঘটিত হয়েছিল?', opts: ['১৮৩৯ খ্রিস্টাব্দে', '১৮৫৮ খ্রিস্টাব্দে', '১৮৯৫ খ্রিস্টাব্দে', '১৯০০ খ্রিস্টাব্দে'], ans: 3, exp: 'চিনে বিদেশি আগ্রাসনের বিরুদ্ধে ১৯০০ খ্রিস্টাব্দে বক্সার বিদ্রোহ হয়, যার সুযোগ নিয়ে রুশ সেনাবাহিনী মাঞ্চুরিয়া দখল করে নেয়।'}
+    ]
+  },
+  12: {
+    name: 'Set 12',
+    icon: '📝',
+    topic: 'অনুশীলনী ও বিবিধ (দ্বিতীয় ভাগ)',
+    questions: [
+      {q: 'মার্কেন্টাইলবাদ (Mercantilism) শব্দটি সর্বপ্রথম উল্লেখ করেন কে?', opts: ['ডেভিড থমসন', 'লর্ড অ্যাকটন', 'অ্যাডাম স্মিথ', 'ভিনসেন্ট স্মিথ'], ans: 2, exp: '১৭৭৬ খ্রিস্টাব্দে ব্রিটিশ অর্থনীতিবিদ অ্যাডাম স্মিথ তাঁর ওয়েলথ অব নেশনস (Wealth of Nations) গ্রন্থে অবজ্ঞার সঙ্গে সর্বপ্রথম মার্কেন্টাইলবাদ শব্দটি ব্যবহার করেন।'},
+      {q: '১৯১০ খ্রিস্টাব্দে Finance Capital বা ফিনান্স ক্যাপিটাল গ্রন্থটির লেখক হলেন—', opts: ['রুডইয়ার্ড কিপলিং', 'রুডলফ হিলফারডিং', 'জে এ হবসন', 'ভি আই লেনিন'], ans: 1, exp: 'জার্মানির সোশ্যাল ডেমোক্রেটিক পার্টির তাত্ত্বিক নেতা রুডলফ হিলফারডিং এই গ্রন্থটি রচনা করেন।'},
+      {q: 'Imperialism: A Study গ্রন্থটি রচনা করেন—', opts: ['কার্ল মার্কস', 'জে এ হবসন', 'ভি আই লেনিন', 'রুডলফ হিলফারডিং'], ans: 1, exp: 'ব্রিটিশ অর্থনীতিবিদ জন অ্যাটকিনসন হবসন ১৯০২ খ্রিস্টাব্দে এই বইটি প্রকাশ করে সাম্রাজ্যবাদের পিছনে উদ্বৃত্ত পুঁজির তাগিদের কথা ব্যাখ্যা করেন।'},
+      {q: 'Imperialism: The Highest Stage of Capitalism গ্রন্থটি কে লিখেছিলেন?', opts: ['কার্ল মার্কস', 'ভি আই লেনিন', 'রুডলফ হিলফারডিং', 'জে এ হবসন'], ans: 1, exp: 'রুশ কমিউনিস্ট নেতা লেনিন ১৯১৬ খ্রিস্টাব্দে এই বিখ্যাত গ্রন্থটি রচনা করেন।'},
+      {q: 'কোন্ স্পেনীয় নাবিক ইনকা সভ্যতা ধ্বংস করেন?', opts: ['কলম্বাস', 'ফ্রান্সিসকো পিজারো', 'হার্নান কোর্টেস', 'আমেরিগো ভেসপুচি'], ans: 1, exp: '১৫৩২ খ্রিস্টাব্দে স্পেনীয় নাবিক ফ্রান্সিসকো পিজারো দক্ষিণ আমেরিকার পেরু দখল করেন এবং সেখানকার সমৃদ্ধ ইনকা সভ্যতা ধ্বংস করেন।'},
+      {q: 'ইন্দোনেশিয়া কোন্ ইউরোপীয় শক্তির উপনিবেশ ছিল?', opts: ['ইংল্যান্ড', 'ফ্রান্স', 'স্পেন', 'হল্যান্ড (ডাচ)'], ans: 3, exp: 'সপ্তদশ শতক নাগাদ হল্যান্ডের ডাচ বা ওলন্দাজরা ইন্দোনেশিয়ায় আধিপত্য প্রতিষ্ঠা করে।'},
+      {q: 'পোর্তুগিজরা কাকে "ব্ল্যাকগোল্ড" (Black Gold) বলত?', opts: ['কয়লাকে', 'গোলমরিচকে', 'আফিমকে', 'দারুচিনিকে'], ans: 1, exp: 'ভারতের মালাবার উপকূল থেকে সংগৃহীত গোলমরিচের ইউরোপীয় বাজারে ব্যাপক চাহিদা ও মূল্য ছিল বলে পোর্তুগিজরা একে ব্ল্যাকগোল্ড বলত।'},
+      {q: 'অবাধ বাণিজ্য নীতি বা মুক্ত বাণিজ্য নীতির (Free Trade Policy) একজন প্রবক্তা হলেন—', opts: ['কোলবার্ট', 'অ্যাডাম স্মিথ', 'চতুর্দশ লুই', 'নেপোলিয়ান বোনাপার্ট'], ans: 1, exp: 'অ্যাডাম স্মিথ মার্কেন্টাইলবাদের সংরক্ষণ নীতির তীব্র বিরোধিতা করে বলেন যে, অবাধ বাণিজ্যের মাধ্যমেই দেশের অর্থনীতি মজবুত হতে পারে।'},
+      {q: 'এশিয়া মহাদেশে পোর্তুগিজদের সর্বশেষ উপনিবেশ ম্যাকাও বন্দর কোথায় অবস্থিত?', opts: ['চিনে', 'জাপানে', 'ইংল্যান্ডে', 'ফ্রান্সে'], ans: 0, exp: 'ম্যাকাও বন্দরটি চিনে অবস্থিত, যা ১৯৯৯ খ্রিস্টাব্দে পোর্তুগাল চিনকে ফিরিয়ে দিলে এশিয়ায় ইউরোপীয় উপনিবেশের অবসান ঘটে।'},
+      {q: 'দ্বিতীয় ইঙ্গ-আফগান যুদ্ধের পর গন্ডমাকের সন্ধি কবে স্বাক্ষরিত হয়েছিল?', opts: ['১৮৪০ খ্রিস্টাব্দে', '১৮৪৯ খ্রিস্টাব্দে', '১৮৭৯ খ্রিস্টাব্দে', '১৮৮৯ খ্রিস্টাব্দে'], ans: 2, exp: '১৮৭৮ খ্রিস্টাব্দে লর্ড লিটন আফগানিস্তান আক্রমণ করলে আফগান আমির পরাজিত হন এবং তাঁর পুত্র ইয়াকুব খান ১৮৭৯ খ্রিস্টাব্দে গন্ডমাকের সন্ধি স্বাক্ষর করেন।'},
+      {q: '"মনরো নীতি" বা মনরো ডকট্রিন কোন্ দেশ প্রণয়ন করে?', opts: ['চিন', 'জাপান', 'ব্রিটেন', 'মার্কিন যুক্তরাষ্ট্র'], ans: 3, exp: 'মার্কিন যুক্তরাষ্ট্র তার নিজের প্রভাব বলয় ও উপনিবেশিক স্বার্থ রক্ষার জন্য মনরো নীতি গ্রহণ করেছিল।'},
+      {q: 'উগ্র জাতীয়তাবাদের যুগে কোন্ দেশের ঐতিহাসিকরা প্রচার করেন যে টিউটনিক জাতিই পৃথিবীর শ্রেষ্ঠ জাতি?', opts: ['ব্রিটিশরা', 'ফরাসিরা', 'ভারতীয়রা', 'জার্মানরা'], ans: 3, exp: 'জার্মান ঐতিহাসিক হেনরিখ ফন ট্রিটস্কি ও বার্নহার্ডি জার্মানির টিউটনিক জাতিকে শ্রেষ্ঠ বলে প্রচার করে সাম্রাজ্যবাদকে সমর্থন করেছিলেন।'},
+      {q: 'কঙ্গো ফ্রি স্টেট (Congo Free State) গঠনের প্রধান প্রবক্তা কোন্ দেশ ছিল?', opts: ['ব্রিটেন', 'ফ্রান্স', 'জাপান', 'বেলজিয়াম'], ans: 3, exp: 'বেলজিয়ামের রাজা দ্বিতীয় লিওপোল্ডের উদ্যোগে ১৮৮৪-৮৫ খ্রিস্টাব্দে কঙ্গো ফ্রি স্টেট গঠিত হয়।'},
+      {q: 'ইন্টারনাল কলোনিয়ালিজম (Internal Colonialism) গ্রন্থটি কে রচনা করেন?', opts: ['ভি আই লেনিন', 'মাইকেল হেক্টার (Michael Hechter)', 'অ্যাডাম স্মিথ', 'ডেভিড থমসন'], ans: 1, exp: 'তিনি এই গ্রন্থে দেখিয়েছেন যে ইংল্যান্ডের শক্তিশালী জনগোষ্ঠী কীভাবে তাদেরই সীমান্তবর্তী এলাকার মানুষকে শোষণ করত।'},
+      {q: 'নিকট প্রাচ্য (Near East) বা মধ্যপ্রাচ্য বলতে সাম্রাজ্যবাদের যুগে মূলত কোন্ অঞ্চলকে বোঝাত?', opts: ['রোমকে', 'তুরস্ক ও পারস্য অঞ্চলকে', 'আমেরিকাকে', 'গ্রিসকে'], ans: 1, exp: 'মধ্যপ্রাচ্য বা নিকট প্রাচ্যের তুরস্ক, পারস্য (ইরান) অঞ্চলে আধিপত্য বিস্তার নিয়ে রাশিয়া ও ইংল্যান্ডের মধ্যে তীব্র প্রতিযোগিতা চলেছিল।'}
+    ]
+  },
+  13: {
+    name: 'Set 13',
+    icon: '📋',
+    topic: 'অনুশীলনী ও বিবিধ (স্তম্ভ মেলানো ও অন্যান্য)',
+    questions: [
+      {q: 'মোজাম্বিক, সোমালিয়া, কঙ্গো ও মরক্কো—এই দেশগুলি আফ্রিকায় যথাক্রমে কাদের উপনিবেশ ছিল?', opts: ['ইংল্যান্ড, ফ্রান্স, ইটালি ও স্পেনের', 'পোর্তুগাল, ইটালি, বেলজিয়াম ও ফ্রান্সের', 'স্পেন, জার্মানি, পোর্তুগাল ও হল্যান্ডের', 'ফ্রান্স, ইংল্যান্ড, বেলজিয়াম ও ইটালির'], ans: 1, exp: 'আফ্রিকা ব্যবচ্ছেদের সময় মোজাম্বিক পোর্তুগালের, সোমালিল্যান্ড ইটালির, কঙ্গো বেলজিয়ামের এবং মরক্কো ফ্রান্সের উপনিবেশে পরিণত হয়।'},
+      {q: 'সামুদ্রিক অভিযানের এলাকা নির্ধারণের জন্য টরডিসিল্লাস-এর চুক্তি কবে এবং কাদের মধ্যে স্বাক্ষরিত হয়?', opts: ['১৪৯৪ খ্রিস্টাব্দে, পোর্তুগাল ও স্পেনের মধ্যে', '১৫০২ খ্রিস্টাব্দে, ইংল্যান্ড ও ফ্রান্সের মধ্যে', '১৭৮৩ খ্রিস্টাব্দে, আমেরিকা ও ব্রিটেনের মধ্যে', '১৮০২ খ্রিস্টাব্দে, ডাচ ও পোর্তুগিজদের মধ্যে'], ans: 0, exp: 'পোপের নির্দেশনামায় আপত্তি ওঠায় শেষপর্যন্ত ১৪৯৪ খ্রিস্টাব্দে পোর্তুগাল ও স্পেনের মধ্যে এই চুক্তি স্বাক্ষরিত হয়।'},
+      {q: '১৮০২ খ্রিস্টাব্দে কোন্ সন্ধির মাধ্যমে সিংহল বা শ্রীলঙ্কা ইংল্যান্ডের অধিকারে আসে?', opts: ['গন্ডমাকের সন্ধি', 'প্যারিসের সন্ধি', 'অ্যামিয়েন্সের সন্ধি', 'ইয়ান্দাবুর সন্ধি'], ans: 2, exp: 'ডাচদের বিতাড়িত করে ১৮০২ খ্রিস্টাব্দে অ্যামিয়েন্সের সন্ধির দ্বারা সিংহল পাকাপাকিভাবে ইংল্যান্ডের অধিকারে আসে।'},
+      {q: '১৮৭৬ খ্রিস্টাব্দে কার উদ্যোগে এবং কী উদ্দেশ্যে আন্তর্জাতিক আফ্রিকা সংঘ গঠিত হয়?', opts: ['ইংল্যান্ডের রানি ভিক্টোরিয়ার উদ্যোগে, ধর্মপ্রচারের জন্য', 'বেলজিয়ামের রাজা দ্বিতীয় লিওপোল্ডের উদ্যোগে, আফ্রিকায় উপনিবেশ বিস্তারের জন্য', 'ফরাসি সম্রাট নেপোলিয়নের উদ্যোগে, দাস ব্যবসার জন্য', 'জার্মানির কাইজারের উদ্যোগে, নৌঘাঁটি বানানোর জন্য'], ans: 1, exp: 'আফ্রিকায় খনিজ সমৃদ্ধ অঞ্চল লুণ্ঠন ও সেখানে আধিপত্য বিস্তারের লক্ষ্যেই লিওপোল্ডের উদ্যোগে এই সংঘ তৈরি হয়।'},
+      {q: 'ভাস্কো-দা-গামা ১৪৯৮ খ্রিস্টাব্দে ভারতের কোন্ বন্দরে প্রথম পদার্পণ করেন?', opts: ['সুরাট', 'কালিকট', 'গোয়া', 'কোচিন'], ans: 1, exp: '১৪৯৮ খ্রিস্টাব্দের ১৭ মে ভাস্কো-দা-গামা ভারতের পশ্চিম উপকূলে কালিকট বন্দরে উপস্থিত হন।'},
+      {q: 'চার্লস ডারউইনের তত্ত্ব যোগ্যতমের উদ্বর্তন-এর মূল কথা কী?', opts: ['সব প্রাণীই সমানভাবে বেঁচে থাকবে', 'প্রতিকূল পরিস্থিতিতে যোগ্যতম প্রাণীই বিবর্তনের মাধ্যমে টিকে থাকে', 'ঈশ্বর নির্দিষ্ট প্রাণীদের বাঁচিয়ে রাখেন', 'শ্বেতাঙ্গরা কৃষ্ণাঙ্গদের রক্ষা করবে'], ans: 1, exp: 'ডারউইন তাঁর জীববিজ্ঞানের এই তত্ত্ব দিয়েছিলেন, যা পরে ইউরোপীয় সাম্রাজ্যবাদীরা নিজেদের জাতিগত শ্রেষ্ঠত্ব প্রমাণ করতে সামাজিক ক্ষেত্রে প্রয়োগ করেছিল।'},
+      {q: 'New Economic Policy বা NEP-এর প্রবক্তা কে ছিলেন?', opts: ['ভি আই লেনিন', 'জোসেফ স্ট্যালিন', 'কার্ল মার্কস', 'অ্যাডাম স্মিথ'], ans: 0, exp: 'রুশ কমিউনিস্ট নেতা লেনিন রাশিয়ায় এই নতুন অর্থনৈতিক নীতি প্রবর্তন করেন।'},
+      {q: 'মার্কিন সেনাপতি কমোডোর ম্যাথু পেরি-র পেরি মিশন কোন্ দেশের সঙ্গে সম্পর্কিত?', opts: ['চিন', 'ভারত', 'জাপান', 'ফিলিপিন্স'], ans: 2, exp: '১৮৫৪ খ্রিস্টাব্দে সাতটি যুদ্ধজাহাজ নিয়ে পেরি জাপানে পৌঁছোন এবং জাপানকে আমেরিকার জন্য বন্দর খুলে দিতে বাধ্য করেন।'},
+      {q: 'আফ্রিকায় ফরাসি মিশনারিদের মধ্যে কারা বিশেষ সক্রিয় ছিলেন?', opts: ['ডেভিড লিভিংস্টোন ও আলেকজান্ডার ডাফ', 'স্ট্যানলি এবং কার্ডিনাল লেভিজেরি', 'উইলিয়াম কেরি ও মার্শম্যান', 'লর্ড ক্রোমার ও লর্ড লুগার্ড'], ans: 1, exp: 'ধর্মপ্রচারের ক্ষেত্রে ফরাসি মিশনারিদের ভূমিকা বেশি ছিল এবং আফ্রিকায় স্ট্যানলি ও কার্ডিনাল লেভিজেরি বিশেষভাবে ধর্মপ্রচারে সক্রিয় ছিলেন।'},
+      {q: 'শিমোনোসেকির সন্ধি কবে স্বাক্ষরিত হয়?', opts: ['১৮৪২ খ্রিস্টাব্দে', '১৮৫৮ খ্রিস্টাব্দে', '১৮৯৫ খ্রিস্টাব্দে', '১৯০৫ খ্রিস্টাব্দে'], ans: 2, exp: '১৮৯৪-৯৫ খ্রিস্টাব্দের চিন-জাপান যুদ্ধে চিন পরাজিত হয়ে ১৮৯৫ খ্রিস্টাব্দে জাপানের সঙ্গে শিমোনোসেকির সন্ধি স্বাক্ষরে বাধ্য হয়।'},
+      {q: 'চিনের মাঞ্চুরিয়া প্রদেশের লিয়াও-টুং উপদ্বীপ শিমোনোসেকির সন্ধির মাধ্যমে কারা দখল করেছিল?', opts: ['রাশিয়া', 'ফ্রান্স', 'জাপান', 'ইংল্যান্ড'], ans: 2, exp: 'জাপান চিনকে পরাজিত করে এই উপদ্বীপ দখল করেছিল, যদিও পরে রাশিয়া জাপানের ওপর চাপ সৃষ্টি করে তা নিজেদের দখলে নিয়ে নেয়।'},
+      {q: 'একুশ দফা দাবি (১৯১৫ খ্রি.) কে কার ওপর চাপিয়ে দেয়?', opts: ['ইংল্যান্ড ভারতের ওপর', 'জাপান চিনের ওপর', 'আমেরিকা জাপানের ওপর', 'রাশিয়া চিনের ওপর'], ans: 1, exp: 'প্রথম বিশ্বযুদ্ধের সুযোগ নিয়ে জাপান চিনের শান্টুং প্রদেশ দখল করে চিনের ওপর এই অপমানজনক একুশ দফা দাবি চাপিয়ে দেয়।'},
+      {q: 'কোন্ দেশে জৌহর প্রথা এবং সতীদাহ প্রথার মতো দেশীয় প্রথার বিরুদ্ধে ইউরোপীয়রা নিজেদের উন্নত সভ্যতার যুক্তি দিত?', opts: ['চিনে', 'ভারতে', 'আফ্রিকায়', 'জাপানে'], ans: 1, exp: 'ভারতে উপনিবেশ স্থাপন করে ব্রিটিশরা সতীদাহ, জৌহর প্রভৃতির মতো প্রথার বিরুদ্ধে নিজেদের উন্নত সংস্কৃতির বড়াই করত।'},
+      {q: '"পলাশির যুদ্ধই প্রকৃতপক্ষে ভারতে ফরাসিদের ভাগ্য নির্ধারণ করে দেয়" —কেন এ কথা বলা হয়?', opts: ['ফরাসিরা পলাশিতে সিরাজের পক্ষে লড়ে মারা যায় বলে', 'পলাশির যুদ্ধে জয়লাভের ফলে ইংরেজরা বাংলার বিপুল অর্থ-সম্পদ দাক্ষিণাত্যে ফরাসিদের বিরুদ্ধে ব্যবহার করতে পেরেছিল বলে', 'রবার্ট ক্লাইভ ফরাসি ছিলেন বলে', 'ফরাসিরা যুদ্ধে ভয় পেয়ে ভারত ছাড়ে বলে'], ans: 1, exp: 'ইংরেজদের আর্থিক সমৃদ্ধি ফরাসিদের চেয়ে অনেক বেশি হওয়ায় তৃতীয় কর্ণাটকের যুদ্ধে তারা সহজেই ফরাসিদের হারাতে পেরেছিল।'},
+      {q: 'প্রথম আফিম যুদ্ধে চিনের পরাজয়ের পর ইংরেজরা চিনের কোন্ অঞ্চলটি লাভ করে?', opts: ['ম্যাকাও', 'তাইওয়ান', 'হংকং', 'পোর্ট আর্থার'], ans: 2, exp: '১৮৪২ খ্রিস্টাব্দে নানকিং-এর সন্ধির মাধ্যমে ইংরেজরা হংকং লাভ করে।'}
+    ]
+  },
+  14: {
+    name: 'Set 14',
+    icon: '📅',
+    topic: 'অধ্যায়ের সামগ্রিক মূল্যায়ন ও কালপঞ্জি',
+    questions: [
+      {q: '১৬০০ খ্রিস্টাব্দে প্রতিষ্ঠিত ইংরেজ ইস্ট ইন্ডিয়া কোম্পানির প্রাথমিক নাম কী ছিল?', opts: ['The British Trading Company of India', 'The Governor and Company of Merchants of London trading to East Indies', 'Royal East India Company', 'United British Company of Indies'], ans: 1, exp: '১৬০০ খ্রিস্টাব্দের ৩১ ডিসেম্বর রানি এলিজাবেথের অনুমতিক্রমে গঠিত হওয়ার সময় কোম্পানির এই দীর্ঘ নাম দেওয়া হয়েছিল।'},
+      {q: 'ফরাসি ইস্ট ইন্ডিয়া কোম্পানি কবে প্রতিষ্ঠিত হয়?', opts: ['১৬০০ খ্রিস্টাব্দে', '১৬০২ খ্রিস্টাব্দে', '১৬৬৪ খ্রিস্টাব্দে', '১৭৪১ খ্রিস্টাব্দে'], ans: 2, exp: 'ফরাসি মন্ত্রী জাঁ ব্যাপটিস্ট কোলবার্টের উদ্যোগে ১৬৬৪ খ্রিস্টাব্দে ফরাসি ইস্ট ইন্ডিয়া কোম্পানি প্রতিষ্ঠিত হয়েছিল।'},
+      {q: 'কোন্ ঘটনার ফলে আমেরিকা ইংল্যান্ডের অধীনতা পাশ ছিন্ন করে স্বাধীনতা লাভ করে?', opts: ['ফরাসি বিপ্লব', 'আমেরিকার স্বাধীনতা যুদ্ধ (১৭৭৬-১৭৮৩ খ্রি.)', 'সপ্তবর্ষের যুদ্ধ', 'প্রথম বিশ্বযুদ্ধ'], ans: 1, exp: '১৭৭৬ খ্রিস্টাব্দে আমেরিকার ১৩টি উপনিবেশ ইংল্যান্ডের বিরুদ্ধে স্বাধীনতা ঘোষণা করে এবং যুদ্ধের পর ১৭৮৩ খ্রিস্টাব্দে পাকাপাকিভাবে স্বাধীনতা লাভ করে।'},
+      {q: 'ডাচ ওয়েস্ট ইন্ডিয়া কোম্পানি কবে গঠিত হয়?', opts: ['১৬০০ খ্রিস্টাব্দে', '১৬০২ খ্রিস্টাব্দে', '১৬১২ খ্রিস্টাব্দে', '১৬৬৪ খ্রিস্টাব্দে'], ans: 2, exp: 'ক্যারিবিয়ান অঞ্চল ও আমেরিকায় ডাচদের ঔপনিবেশিক ও বাণিজ্যিক প্রসারের উদ্দেশ্যে ১৬১২ খ্রিস্টাব্দে ডাচ ওয়েস্ট ইন্ডিয়া কোম্পানি গঠিত হয়।'},
+      {q: 'হাওয়াই দ্বীপপুঞ্জ কবে সম্পূর্ণরূপে আমেরিকার অন্তর্ভুক্ত হয়?', opts: ['১৮৫৭ খ্রিস্টাব্দে', '১৮৯৩ খ্রিস্টাব্দে', '১৮৯৮ খ্রিস্টাব্দে', '১৯১৪ খ্রিস্টাব্দে'], ans: 2, exp: '১৮৯৩ খ্রিস্টাব্দে আমেরিকা হাওয়াই দ্বীপপুঞ্জ দখল করে প্রজাতন্ত্র প্রতিষ্ঠা করে এবং এর পাঁচ বছর পর ১৮৯৮ খ্রিস্টাব্দে তা সম্পূর্ণরূপে আমেরিকার অন্তর্ভুক্ত হয়।'},
+      {q: 'ইংল্যান্ড ও ব্রহ্মদেশের মধ্যে ইয়ান্দাবুর সন্ধি কবে স্বাক্ষরিত হয়?', opts: ['১৮১৬ খ্রিস্টাব্দে', '১৮২৬ খ্রিস্টাব্দে', '১৮৫২ খ্রিস্টাব্দে', '১৮৮৫ খ্রিস্টাব্দে'], ans: 1, exp: 'প্রথম ইঙ্গ-ব্রহ্ম যুদ্ধের অবসানে ১৮২৬ খ্রিস্টাব্দে রয়দেশের রাজা (ব্রহ্মরাজ) এবং ইংরেজদের মধ্যে ইয়ান্দাবুর সন্ধি স্বাক্ষরিত হয়।'},
+      {q: 'জাপান ও আমেরিকার মধ্যে কানাগাওয়ার সন্ধি কবে স্বাক্ষরিত হয়?', opts: ['১৮৪২ খ্রিস্টাব্দে', '১৮৫৪ খ্রিস্টাব্দে', '১৮৫৮ খ্রিস্টাব্দে', '১৮৯৫ খ্রিস্টাব্দে'], ans: 1, exp: 'ম্যাথু পেরির নৌ-অভিযানের পর ভীত হয়ে জাপানের শোগুন-সরকার ১৮৫৪ খ্রিস্টাব্দে আমেরিকার সাথে কানাগাওয়ার সন্ধি স্বাক্ষর করে।'},
+      {q: 'ইংল্যান্ড ও নেপালের মধ্যে সগৌলির সন্ধি কবে স্বাক্ষরিত হয়?', opts: ['১৮১৪ খ্রিস্টাব্দে', '১৮১৬ খ্রিস্টাব্দে', '১৮২৬ খ্রিস্টাব্দে', '১৮৭৯ খ্রিস্টাব্দে'], ans: 1, exp: 'ইঙ্গ-নেপাল যুদ্ধের পর নেপালের গোরখারা পরাজিত হয়ে ১৮১৬ খ্রিস্টাব্দে ইংরেজদের সাথে সগৌলির সন্ধি স্বাক্ষরে বাধ্য হয়।'},
+      {q: 'ডাচ নাবিক পেড্রো কেব্রাল ১৫০০ খ্রিস্টাব্দে দক্ষিণ আমেরিকার কোন্ স্থানে পদার্পণ করেন?', opts: ['পেরু', 'চিলি', 'ব্রাজিল', 'মেক্সিকো'], ans: 2, exp: '১৫০০ খ্রিস্টাব্দে পেড্রো কেব্রাল ব্রাজিলে পৌঁছোন এবং তাঁরই উদ্যোগে সেখানে পোর্তুগিজদের বিশাল উপনিবেশ স্থাপিত হয়।'},
+      {q: 'ইউরোপের বিভিন্ন দেশের সরকার নিজেদের শিল্পের সুরক্ষার্থে বিদেশি পণ্যের ওপর বিপুল শুল্ক বসানোর যে নীতি নিয়েছিল, তা কী নামে পরিচিত?', opts: ['মুক্তদ্বার নীতি', 'শুল্ক সংরক্ষণ নীতি', 'অবাধ বাণিজ্য নীতি', 'নয়া উপনিবেশবাদ'], ans: 1, exp: 'দেশীয় শিল্পকে বিদেশি সস্তা পণ্যের প্রতিযোগিতার হাত থেকে রক্ষা করতে বিভিন্ন ইউরোপীয় দেশ এই শুল্ক সংরক্ষণ নীতি বা Protectionism গ্রহণ করে।'},
+      {q: 'উপনিবেশ থেকে বিপুল পরিমাণ সোনা ও রূপা ইউরোপে আসার ফলে যে অস্বাভাবিক দ্রব্যমূল্য বৃদ্ধি ঘটেছিল, তাকে কী বলা হয়?', opts: ['শিল্পবিপ্লব', 'মূল্যবিপ্লব (Price Revolution)', 'রেনেসাঁস', 'বাণিজ্য বিপ্লব'], ans: 1, exp: 'আমেরিকা থেকে বিপুল পরিমাণ সোনা ও রূপা ইউরোপে আসায় মুদ্রাস্ফীতি ঘটে এবং দ্রব্যমূল্য অস্বাভাবিকভাবে বৃদ্ধি পায়, যা মূল্যবিপ্লব নামে পরিচিত।'},
+      {q: 'প্রথম বিশ্বযুদ্ধের পূর্বে এশিয়া ও আফ্রিকায় উপনিবেশ দখলের যে তীব্র লড়াই দেখা যায়, তার একটি প্রধান কারণ হিসেবে লেনিন কীসের কথা বলেছেন?', opts: ['জনসংখ্যা বৃদ্ধি', 'ধর্মপ্রচার', 'উদ্বৃত্ত পুঁজি বা মূলধনের লগ্নি', 'বৈজ্ঞানিক আবিষ্কার'], ans: 2, exp: 'লেনিন তাঁর তত্ত্বে দেখিয়েছেন যে, পুঁজিপতিদের হাতে জমে থাকা উদ্বৃত্ত মূলধন লাভজনকভাবে লগ্নি করার তাগিদই সাম্রাজ্যবাদের জন্ম দিয়েছে।'},
+      {q: 'উনবিংশ শতকের শেষদিকে ইউরোপের সাম্রাজ্যবাদী শক্তিগুলির গ্রহণ করা নীতিকে ঐতিহাসিকরা কী আখ্যা দিয়েছেন?', opts: ['ধ্রুপদি সাম্রাজ্যবাদ', 'নয়া সাম্রাজ্যবাদ (Neo Imperialism)', 'সাম্যবাদ', 'ফ্যাসিবাদ'], ans: 1, exp: '১৮৭০-১৯১৪ খ্রিস্টাব্দের কালপর্বে ইউরোপীয় রাষ্ট্রগুলি যেভাবে তীব্র আগ্রাসনের সঙ্গে উপনিবেশ দখলের প্রতিযোগিতায় নামে, তাকে নয়া সাম্রাজ্যবাদ বলা হয়।'},
+      {q: 'প্রথম বিশ্বযুদ্ধে পরাজিত রাষ্ট্রগুলির উপনিবেশগুলিকে যুদ্ধে বিজয়ী শক্তিগুলি কী হিসেবে দখল করে নেয়?', opts: ['স্থায়ী প্রদেশ হিসেবে', 'স্বাধীন রাষ্ট্র হিসেবে', 'তত্ত্বাবধায়ক বা ম্যান্ডেট হিসেবে', 'দাস উপনিবেশ হিসেবে'], ans: 2, exp: 'প্রথম বিশ্বযুদ্ধের পর লিগ অফ নেশনস-এর নিয়মানুযায়ী বিজয়ী রাষ্ট্রগুলি জার্মানি ও তুরস্কের উপনিবেশগুলিকে তত্ত্বাবধায়ক (Mandate) হিসেবে দেখাশোনার দায়িত্ব পায়।'},
+      {q: 'দ্বিতীয় বিশ্বযুদ্ধের পরবর্তীকালে উপনিবেশগুলিতে কী ধরনের আন্দোলন সবচেয়ে বেশি জোরদার হয়?', opts: ['দাস আন্দোলন', 'শিল্পবিপ্লব', 'জাতীয়তাবাদী মুক্তি আন্দোলন', 'ধর্মযুদ্ধ'], ans: 2, exp: 'দ্বিতীয় বিশ্বযুদ্ধের পর এশিয়া ও আফ্রিকার প্রায় সব উপনিবেশেই পরাধীনতার শৃঙ্খল মোচনের জন্য প্রবল জাতীয়তাবাদী মুক্তি আন্দোলন শুরু হয়।'}
+    ]
+  }
+};
+
+// ============================================================
+//  গ্লোবাল ভেরিয়েবল
+// ============================================================
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+let currentSetId = 1;
+let cur = 0, score = 0, wrong = 0, answered = false, timerInterval, timeLeft = 10 * 60;
+let userAnswers = [];
+let isLoggedIn = false;
+let currentUser = null;
+let pendingSetId = null;
+
+// ============================================================
+//  হাব পেজ বিল্ড
+// ============================================================
+function buildHub() {
+  const grid = document.getElementById('setGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= TOTAL_SETS; i++) {
+    const set = allSets[i];
+    const card = document.createElement('div');
+    card.className = 'set-card';
+    card.innerHTML = `
+      <div class="icon">${set.icon}</div>
+      <div class="set-num">${set.name}</div>
+      <div class="set-title">${set.topic}</div>
+      <div class="set-meta"><span>১৫ প্রশ্ন</span><span>১০ মিনিট</span></div>
+    `;
+    card.onclick = () => selectSet(i);
+    grid.appendChild(card);
+  }
+}
+
+function showHub() {
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  if (currentUser) {
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+  } else {
+    document.getElementById('hubUserInfo').innerHTML = '';
+  }
+}
+
+function goToHub() {
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  isLoggedIn = false;
+  currentUser = null;
+}
+
+// ============================================================
+//  সেট সিলেক্ট - সবসময় লগইন চেক
+// ============================================================
+function selectSet(id) {
+  currentSetId = id;
+  const set = allSets[id];
+  pendingSetId = id;
+  document.getElementById('loginSetName').textContent = `📚 ${set.name} — ${set.topic}`;
+  document.getElementById('loginOverlay').classList.add('active');
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('limitInfo').style.display = 'none';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginUsername').focus();
+}
+
+// ============================================================
+//  লগইন ফাংশন
+// ============================================================
+function doLoginFromSet() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errorEl = document.getElementById('loginError');
+  const limitInfo = document.getElementById('limitInfo');
+  const loginBtn = document.getElementById('loginBtn');
+
+  if (!username || !password) {
+    errorEl.textContent = '❌ দয়া করে ইউজারনেম ও পাসওয়ার্ড দিন।';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const user = userData.find(u => u.username === username && u.password === password);
+  if (user) {
+    const setAttempts = user.attempts[currentSetId] || 0;
+    if (setAttempts >= MAX_ATTEMPTS) {
+      limitInfo.style.display = 'block';
+      document.getElementById('limitMsg').textContent = `আপনি এই অ্যাকাউন্ট দিয়ে ${allSets[currentSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`;
+      errorEl.style.display = 'none';
+      loginBtn.disabled = true;
+      return;
+    }
+    
+    isLoggedIn = true;
+    currentUser = user;
+    errorEl.style.display = 'none';
+    limitInfo.style.display = 'none';
+    loginBtn.disabled = false;
+    document.getElementById('loginOverlay').classList.remove('active');
+    
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+    
+    startQuiz(currentSetId);
+  } else {
+    errorEl.textContent = '❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।';
+    errorEl.style.display = 'block';
+    limitInfo.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  document.getElementById('loginUsername').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  buildHub();
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+});
+
+// ============================================================
+//  কুইজ ফাংশন
+// ============================================================
+function startQuiz(setId) {
+  if (!isLoggedIn || !currentUser) return;
+  
+  const setAttempts = currentUser.attempts[setId] || 0;
+  if (setAttempts >= MAX_ATTEMPTS) {
+    alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+    return;
+  }
+  
+  currentUser.attempts[setId] = (currentUser.attempts[setId] || 0) + 1;
+  
+  cur = 0; score = 0; wrong = 0; answered = false;
+  timeLeft = 10 * 60; userAnswers = [];
+  document.getElementById('hubPage').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  
+  const set = allSets[setId];
+  document.getElementById('testSetLabel').textContent = set.name;
+  document.getElementById('testSetName').textContent = 'শিক্ষাবিজ্ঞান';
+  document.getElementById('testTopic').textContent = set.topic;
+  
+  clearInterval(timerInterval);
+  timerInterval = setInterval(tick, 1000);
+  loadQ();
+}
+
+function tick() {
+  timeLeft--;
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById('timerDisplay').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  if (timeLeft <= 60) document.getElementById('timerBox').classList.add('danger');
+  if (timeLeft <= 0) { clearInterval(timerInterval); showResult(); }
+}
+
+function loadQ() {
+  answered = false;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'ফলাফল দেখো' : 'পরবর্তী →';
+  document.getElementById('explanation').classList.remove('show');
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  userAnswers[cur] = i;
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(b => b.classList.add('disabled'));
+  btns[q.ans].classList.add('correct');
+  if (i !== q.ans) { btns[i].classList.add('wrong'); wrong++; }
+  else score++;
+  document.getElementById('scoreShow').textContent = 'সঠিক: ' + score + ' | ভুল: ' + wrong;
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+  const set = allSets[currentSetId];
+  cur++;
+  if (cur >= set.questions.length) { clearInterval(timerInterval); showResult(); return; }
+  loadQ();
+}
+
+function showResult() {
+  document.getElementById('testArea').classList.add('hidden');
+  const rw = document.getElementById('resultWrap');
+  rw.classList.add('show');
+  const set = allSets[currentSetId];
+  const pct = Math.round(score / set.questions.length * 100);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('rbCorrect').textContent = score;
+  document.getElementById('rbWrong').textContent = wrong;
+  document.getElementById('rbPct').textContent = pct + '%';
+  
+  const remaining = MAX_ATTEMPTS - (currentUser.attempts[currentSetId] || 0);
+  document.getElementById('attemptInfo').innerHTML = `👤 ${currentUser.username} — ${set.name}: বাকি আছে <strong>${remaining}</strong> বার Test দেওয়ার সুযোগ (সর্বোচ্চ ${MAX_ATTEMPTS} বার)`;
+  
+  const grades = [
+    [90, '🌟', 'অসাধারণ!'],
+    [70, '👍', 'খুব ভালো!'],
+    [50, '📚', 'ভালো চেষ্টা!'],
+    [0, '💪', 'চেষ্টা চালিয়ে যাও!']
+  ];
+  const g = grades.find(x => pct >= x[0]);
+  document.getElementById('resultIcon').textContent = g[1];
+  document.getElementById('resultGrade').textContent = g[2] + ' (' + set.topic + ')';
+}
+
+function showReview() {
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  cur = 0;
+  loadReview();
+}
+
+function loadReview() {
+  const set = allSets[currentSetId];
+  if (cur >= set.questions.length) { 
+    document.getElementById('testArea').classList.add('hidden'); 
+    document.getElementById('resultWrap').classList.add('show'); 
+    return; 
+  }
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'Review — প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'শেষ করো' : 'পরবর্তী →';
+  document.getElementById('nextBtn').onclick = () => { cur++; loadReview(); };
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt disabled';
+    if (i === q.ans) btn.classList.add('correct');
+    else if (userAnswers[cur] === i) btn.classList.add('wrong');
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('scoreShow').textContent = 'সবুজ = সঠিক উত্তর';
+}
+</script>
+
+</body>
+</html>
